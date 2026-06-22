@@ -9,10 +9,12 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Loader2 } from "lucide-react"
 
-export default function AdminLoginPage() {
+export default function AdminSignupPage() {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [adminSecretKey, setAdminSecretKey] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [checkingSession, setCheckingSession] = useState(true)
@@ -33,22 +35,39 @@ export default function AdminLoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError("")
-    setLoading(true)
 
-    const supabase = getSupabaseClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    setLoading(false)
-
-    if (signInError) {
-      setError(signInError.message)
+    if (password !== confirmPassword) {
+      setError("Passwords do not match")
       return
     }
 
-    router.push("/admin/dashboard")
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters")
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, adminSecretKey }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || "Signup failed")
+        setLoading(false)
+        return
+      }
+
+      router.push("/admin/dashboard")
+    } catch {
+      setError("An unexpected error occurred")
+      setLoading(false)
+    }
   }
 
   if (checkingSession) {
@@ -66,9 +85,9 @@ export default function AdminLoginPage() {
           <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-gold">
             <span className="text-lg font-bold text-black">RF</span>
           </div>
-          <CardTitle className="text-xl text-white">Admin Login</CardTitle>
+          <CardTitle className="text-xl text-white">Admin Sign Up</CardTitle>
           <CardDescription className="text-gray-400">
-            Sign in to manage your store
+            Create an admin account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -92,6 +111,29 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={6}
+                className="border-border bg-[#0B0B0B] text-white placeholder:text-gray-600"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300">Confirm Password</label>
+              <Input
+                type="password"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="border-border bg-[#0B0B0B] text-white placeholder:text-gray-600"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300">Admin Secret Key</label>
+              <Input
+                type="password"
+                placeholder="Enter the admin secret key"
+                value={adminSecretKey}
+                onChange={(e) => setAdminSecretKey(e.target.value)}
+                required
                 className="border-border bg-[#0B0B0B] text-white placeholder:text-gray-600"
               />
             </div>
@@ -106,17 +148,17 @@ export default function AdminLoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in...
+                  Creating account...
                 </>
               ) : (
-                "Sign In"
+                "Sign Up"
               )}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm text-gray-400">
-            Don't have an account?{" "}
-            <Link href="/admin/signup" className="text-gold hover:underline">
-              Sign up
+            Already have an account?{" "}
+            <Link href="/admin/login" className="text-gold hover:underline">
+              Sign in
             </Link>
           </div>
         </CardContent>

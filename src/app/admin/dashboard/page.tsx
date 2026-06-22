@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatPrice, formatDate } from "@/lib/utils"
+import { adminFetch } from "@/lib/admin-fetch"
 import { Package, FolderOpen, ShoppingCart, DollarSign } from "lucide-react"
 
 interface DashboardStats {
@@ -27,7 +28,7 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch("/api/admin/stats")
+    adminFetch("/api/admin/stats")
       .then((res) => res.json())
       .then(setStats)
       .finally(() => setLoading(false))

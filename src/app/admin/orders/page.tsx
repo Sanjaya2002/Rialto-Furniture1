@@ -29,6 +29,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatPrice, formatDate } from "@/lib/utils"
+import { adminFetch } from "@/lib/admin-fetch"
 import { toast } from "sonner"
 import { Eye, Loader2 } from "lucide-react"
 import { ORDER_STATUSES } from "@/lib/constants"
@@ -61,7 +62,7 @@ export default function AdminOrdersPage() {
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
 
   const fetchOrders = useCallback(async () => {
-    const res = await fetch("/api/orders")
+    const res = await adminFetch("/api/orders")
     const data = await res.json()
     setOrders(data)
   }, [])
@@ -72,7 +73,7 @@ export default function AdminOrdersPage() {
 
   async function handleStatusChange(orderId: string, status: string) {
     try {
-      const res = await fetch(`/api/orders/${orderId}`, {
+      const res = await adminFetch(`/api/orders/${orderId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),

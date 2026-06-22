@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { generateSlug } from "@/lib/utils";
+import { requireAdmin } from "@/lib/api-auth";
 
 export async function GET(
   _request: NextRequest,
@@ -23,6 +24,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const auth = await requireAdmin(request);
+  if (auth) return auth;
+
   const { slug } = await params;
   const existing = await prisma.product.findUnique({
     where: { slug },
@@ -47,9 +51,12 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const auth = await requireAdmin(request);
+  if (auth) return auth;
+
   const { slug } = await params;
   const existing = await prisma.product.findUnique({
     where: { slug },

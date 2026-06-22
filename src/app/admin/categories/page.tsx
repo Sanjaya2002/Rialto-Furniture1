@@ -22,6 +22,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
+import { adminFetch } from "@/lib/admin-fetch"
 import { toast } from "sonner"
 import { Plus, Pencil, Trash2, Loader2 } from "lucide-react"
 
@@ -88,7 +89,7 @@ export default function AdminCategoriesPage() {
       }
 
       if (editingCategory) {
-        const res = await fetch(`/api/categories/${editingCategory.id}`, {
+        const res = await adminFetch(`/api/categories/${editingCategory.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
@@ -96,7 +97,7 @@ export default function AdminCategoriesPage() {
         if (!res.ok) throw new Error("Failed to update category")
         toast.success("Category updated")
       } else {
-        const res = await fetch("/api/categories", {
+        const res = await adminFetch("/api/categories", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
@@ -117,7 +118,7 @@ export default function AdminCategoriesPage() {
   async function handleDelete() {
     if (!deletingCategory) return
     try {
-      const res = await fetch(`/api/categories/${deletingCategory.id}`, {
+      const res = await adminFetch(`/api/categories/${deletingCategory.id}`, {
         method: "DELETE",
       })
       if (!res.ok) throw new Error("Failed to delete category")

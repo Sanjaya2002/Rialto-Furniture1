@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { generateSlug } from "@/lib/utils";
+import { requireAdmin } from "@/lib/api-auth";
 
 export async function GET() {
   const categories = await prisma.category.findMany({
@@ -11,6 +12,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const auth = await requireAdmin(request);
+  if (auth) return auth;
+
   const body = await request.json();
   const slug = body.slug || generateSlug(body.name);
 

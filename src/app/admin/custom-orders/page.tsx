@@ -29,6 +29,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatDate } from "@/lib/utils"
+import { adminFetch } from "@/lib/admin-fetch"
 import { toast } from "sonner"
 import { Eye, ExternalLink } from "lucide-react"
 
@@ -54,7 +55,7 @@ export default function AdminCustomOrdersPage() {
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
 
   const fetchRequests = useCallback(async () => {
-    const res = await fetch("/api/custom-orders")
+    const res = await adminFetch("/api/custom-orders")
     const data = await res.json()
     setRequests(data)
   }, [])
@@ -65,7 +66,7 @@ export default function AdminCustomOrdersPage() {
 
   async function handleStatusChange(id: string, status: string) {
     try {
-      const res = await fetch(`/api/custom-orders/${id}`, {
+      const res = await adminFetch(`/api/custom-orders/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),

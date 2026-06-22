@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatDate } from "@/lib/utils"
+import { adminFetch } from "@/lib/admin-fetch"
 import { toast } from "sonner"
 import { Star, Trash2 } from "lucide-react"
 
@@ -40,7 +41,7 @@ export default function AdminReviewsPage() {
   const [deletingReview, setDeletingReview] = useState<Review | null>(null)
 
   const fetchReviews = useCallback(async () => {
-    const res = await fetch("/api/reviews")
+    const res = await adminFetch("/api/reviews")
     const data = await res.json()
     setReviews(data)
   }, [])
@@ -52,7 +53,7 @@ export default function AdminReviewsPage() {
   async function handleDelete() {
     if (!deletingReview) return
     try {
-      const res = await fetch(`/api/reviews/${deletingReview.id}`, {
+      const res = await adminFetch(`/api/reviews/${deletingReview.id}`, {
         method: "DELETE",
       })
       if (!res.ok) throw new Error("Failed to delete review")

@@ -32,6 +32,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatPrice } from "@/lib/utils"
+import { adminFetch } from "@/lib/admin-fetch"
 import { toast } from "sonner"
 import { Plus, Pencil, Trash2, Loader2 } from "lucide-react"
 
@@ -102,6 +103,8 @@ export default function AdminProductsPage() {
     ]).finally(() => setLoading(false))
   }, [fetchProducts])
 
+
+
   function openAddDialog() {
     setEditingProduct(null)
     setForm(emptyForm)
@@ -143,7 +146,7 @@ export default function AdminProductsPage() {
       }
 
       if (editingProduct) {
-        const res = await fetch(`/api/products/${editingProduct.slug}`, {
+        const res = await adminFetch(`/api/products/${editingProduct.slug}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
@@ -151,7 +154,7 @@ export default function AdminProductsPage() {
         if (!res.ok) throw new Error("Failed to update product")
         toast.success("Product updated")
       } else {
-        const res = await fetch("/api/products", {
+        const res = await adminFetch("/api/products", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
@@ -172,7 +175,7 @@ export default function AdminProductsPage() {
   async function handleDelete() {
     if (!deletingProduct) return
     try {
-      const res = await fetch(`/api/products/${deletingProduct.slug}`, {
+      const res = await adminFetch(`/api/products/${deletingProduct.slug}`, {
         method: "DELETE",
       })
       if (!res.ok) throw new Error("Failed to delete product")

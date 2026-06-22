@@ -24,7 +24,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     })
   }, [router])
 
-  if (pathname === "/admin/login") {
+  if (pathname === "/admin/login" || pathname === "/admin/signup") {
     return <>{children}</>
   }
 

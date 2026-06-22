@@ -1,9 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, Package, FolderOpen, ShoppingCart, Star, ClipboardList } from "lucide-react"
+import { getSupabaseClient } from "@/lib/supabase"
+import { LayoutDashboard, Package, FolderOpen, ShoppingCart, Star, ClipboardList, LogOut } from "lucide-react"
 
 const navItems = [
   { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -16,6 +17,13 @@ const navItems = [
 
 export function AdminSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+
+  async function handleLogout() {
+    const supabase = getSupabaseClient()
+    await supabase.auth.signOut()
+    router.push("/admin/login")
+  }
 
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-60 flex-col border-r border-border bg-[#0B0B0B]">
@@ -48,12 +56,19 @@ export function AdminSidebar() {
           )
         })}
       </nav>
-      <div className="border-t border-border px-6 py-4">
+      <div className="border-t border-border px-3 py-4 space-y-1">
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-400 transition-colors hover:bg-white/5 hover:text-red-400"
+        >
+          <LogOut className="h-4 w-4" />
+          Logout
+        </button>
         <Link
           href="/"
-          className="text-xs text-gray-500 underline-offset-2 hover:text-gray-300 hover:underline"
+          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-400 transition-colors hover:bg-white/5 hover:text-white"
         >
-          Back to Site
+          ← Back to Site
         </Link>
       </div>
     </aside>
