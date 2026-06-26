@@ -29,6 +29,7 @@ function ShopContent() {
   const searchParams = useSearchParams();
   const [data, setData] = useState<ProductsResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const page = parseInt(searchParams.get("page") || "1");
   const category = searchParams.get("category") || "";
@@ -37,6 +38,7 @@ function ShopContent() {
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     const params = new URLSearchParams();
     params.set("page", page.toString());
     params.set("limit", "12");
@@ -45,9 +47,15 @@ function ShopContent() {
     if (search) params.set("search", search);
 
     fetch(`/api/products?${params.toString()}`)
-      .then((res) => res.json())
-      .then((json) => setData(json))
-      .catch(() => setData(null))
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Failed to load products");
+        const json = await res.json();
+        setData(json);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setData(null);
+      })
       .finally(() => setLoading(false));
   }, [page, category, sort, search]);
 
@@ -75,6 +83,17 @@ function ShopContent() {
                 <Skeleton className="h-9 w-full" />
               </div>
             ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-20">
+            <p className="text-xl text-red-500 mb-2">Failed to load products</p>
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="text-gold hover:underline"
+            >
+              Try again
+            </button>
           </div>
         ) : data && data.products.length > 0 ? (
           <>

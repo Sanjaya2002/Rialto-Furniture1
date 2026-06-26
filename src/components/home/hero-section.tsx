@@ -23,7 +23,7 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1616486339420-70587a23c394?w=1920&q=85"
+          src="/nastuh-abootalebi-eHD8Y1Znfpk-unsplash.jpg"
           alt="Elegant living room with premium furniture"
           className="w-full h-full object-cover"
         />

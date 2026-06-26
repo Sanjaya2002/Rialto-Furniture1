@@ -6,19 +6,27 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const auth = await requireAdmin(request);
-  if (auth) return auth;
+  try {
+    const auth = await requireAdmin(request);
+    if (auth) return auth;
 
-  const { id } = await params;
-  const existing = await prisma.review.findUnique({
-    where: { id },
-  });
+    const { id } = await params;
+    const existing = await prisma.review.findUnique({
+      where: { id },
+    });
 
-  if (!existing) {
-    return NextResponse.json({ error: "Review not found" }, { status: 404 });
+    if (!existing) {
+      return NextResponse.json({ error: "Review not found" }, { status: 404 });
+    }
+
+    await prisma.review.delete({ where: { id } });
+
+    return NextResponse.json({ message: "Review deleted successfully" });
+  } catch (error) {
+    console.error("Failed to delete review:", error);
+    return NextResponse.json(
+      { error: "Failed to delete review" },
+      { status: 500 }
+    );
   }
-
-  await prisma.review.delete({ where: { id } });
-
-  return NextResponse.json({ message: "Review deleted successfully" });
 }

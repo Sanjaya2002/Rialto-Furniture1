@@ -29,8 +29,12 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     adminFetch("/api/admin/stats")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch stats")
+        return res.json()
+      })
       .then(setStats)
+      .catch(() => setStats(null))
       .finally(() => setLoading(false))
   }, [])
 
@@ -92,7 +96,7 @@ export default function AdminDashboardPage() {
                       <TableCell><Skeleton className="h-4 w-28 bg-white/5" /></TableCell>
                     </TableRow>
                   ))
-                : stats?.recentOrders.map((order) => (
+                : stats?.recentOrders?.map((order) => (
                     <TableRow key={order.id} className="border-border text-white">
                       <TableCell className="font-medium">{order.customerName}</TableCell>
                       <TableCell>{formatPrice(order.totalAmount)}</TableCell>

@@ -32,18 +32,23 @@ const itemVariants = {
 export default function FeaturedProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/products?featured=true")
-      .then((res) => res.json())
-      .then((data) => {
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Failed to load products");
+        const data = await res.json();
         setProducts(Array.isArray(data) ? data : data.products || []);
       })
-      .catch(() => setProducts([]))
+      .catch((err) => {
+        setError(err.message);
+        setProducts([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 
-  if (!loading && products.length === 0) return null;
+  if (!loading && products.length === 0 && !error) return null;
 
   return (
     <section className="py-20 px-4">
@@ -60,6 +65,16 @@ export default function FeaturedProducts() {
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="h-96 rounded-lg bg-gray-100 animate-pulse" />
             ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-red-500 mb-2">Failed to load products</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="text-gold hover:underline text-sm"
+            >
+              Try again
+            </button>
           </div>
         ) : (
           <motion.div

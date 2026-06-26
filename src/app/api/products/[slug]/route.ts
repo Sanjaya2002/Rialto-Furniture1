@@ -7,66 +7,90 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const { slug } = await params;
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: { category: true, reviews: true },
-  });
+  try {
+    const { slug } = await params;
+    const product = await prisma.product.findUnique({
+      where: { slug },
+      include: { category: true, reviews: true },
+    });
 
-  if (!product) {
-    return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    if (!product) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(product);
+  } catch (error) {
+    console.error("Failed to fetch product:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch product" },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json(product);
 }
 
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const auth = await requireAdmin(request);
-  if (auth) return auth;
+  try {
+    const auth = await requireAdmin(request);
+    if (auth) return auth;
 
-  const { slug } = await params;
-  const existing = await prisma.product.findUnique({
-    where: { slug },
-  });
+    const { slug } = await params;
+    const existing = await prisma.product.findUnique({
+      where: { slug },
+    });
 
-  if (!existing) {
-    return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    if (!existing) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+
+    const body = await request.json();
+    const data = { ...body };
+    if (body.name) {
+      data.slug = generateSlug(body.name);
+    }
+
+    const product = await prisma.product.update({
+      where: { slug },
+      data,
+    });
+
+    return NextResponse.json(product);
+  } catch (error) {
+    console.error("Failed to update product:", error);
+    return NextResponse.json(
+      { error: "Failed to update product" },
+      { status: 500 }
+    );
   }
-
-  const body = await request.json();
-  const data = { ...body };
-  if (body.name) {
-    data.slug = generateSlug(body.name);
-  }
-
-  const product = await prisma.product.update({
-    where: { slug },
-    data,
-  });
-
-  return NextResponse.json(product);
 }
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const auth = await requireAdmin(request);
-  if (auth) return auth;
+  try {
+    const auth = await requireAdmin(request);
+    if (auth) return auth;
 
-  const { slug } = await params;
-  const existing = await prisma.product.findUnique({
-    where: { slug },
-  });
+    const { slug } = await params;
+    const existing = await prisma.product.findUnique({
+      where: { slug },
+    });
 
-  if (!existing) {
-    return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    if (!existing) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+
+    await prisma.product.delete({ where: { slug } });
+
+    return NextResponse.json({ message: "Product deleted successfully" });
+  } catch (error) {
+    console.error("Failed to delete product:", error);
+    return NextResponse.json(
+      { error: "Failed to delete product" },
+      { status: 500 }
+    );
   }
-
-  await prisma.product.delete({ where: { slug } });
-
-  return NextResponse.json({ message: "Product deleted successfully" });
 }

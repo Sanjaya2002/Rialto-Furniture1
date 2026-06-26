@@ -39,14 +39,19 @@ const itemVariants = {
 export default function FeaturedCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/categories")
-      .then((res) => res.json())
-      .then((data) => {
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Failed to load categories");
+        const data = await res.json();
         setCategories(Array.isArray(data) ? data : data.categories || []);
       })
-      .catch(() => setCategories([]))
+      .catch((err) => {
+        setError(err.message);
+        setCategories([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -65,6 +70,16 @@ export default function FeaturedCategories() {
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="h-80 rounded-lg bg-gray-200 animate-pulse" />
             ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-red-500 mb-2">Failed to load categories</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="text-gold hover:underline text-sm"
+            >
+              Try again
+            </button>
           </div>
         ) : (
           <motion.div
