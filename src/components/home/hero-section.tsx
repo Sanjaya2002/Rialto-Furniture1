@@ -21,14 +21,19 @@ const itemVariants = {
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0">
+      <motion.div
+        className="absolute inset-0"
+        initial={{ scale: 1 }}
+        animate={{ scale: 1.08 }}
+        transition={{ duration: 12, ease: "easeOut", repeat: Infinity, repeatType: "reverse" }}
+      >
         <img
           src="/nastuh-abootalebi-eHD8Y1Znfpk-unsplash.jpg"
           alt="Elegant living room with premium furniture"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/70" />
-      </div>
+      </motion.div>
 
       <motion.div
         variants={containerVariants}
@@ -54,7 +59,7 @@ export default function HeroSection() {
           <Link href="/shop">
             <Button
               size="lg"
-              className="gold-gradient text-luxury-black font-semibold px-8 py-6 text-lg hover:shadow-lg hover:shadow-gold/30 transition-all duration-300"
+              className="gold-gradient text-luxury-black font-semibold px-8 py-6 text-lg hover:shadow-lg hover:shadow-gold/30"
             >
               Shop Now
             </Button>
@@ -71,7 +76,12 @@ export default function HeroSection() {
         </motion.div>
       </motion.div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      <motion.div
+        className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1 }}
+      />
     </section>
   );
 }

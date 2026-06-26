@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -18,6 +19,7 @@ import { PAYMENT_METHODS } from "@/lib/constants";
 import { getPayHereCheckoutUrl, getPayHereFormFields } from "@/lib/payhere";
 import { initiateKOKOPayment, getKOKOPaymentUrl } from "@/lib/koko";
 import OrderSummary from "@/components/checkout/order-summary";
+import { fadeUp, staggerContainer, staggerItemFast } from "@/lib/animations";
 
 interface CheckoutForm {
   name: string;
@@ -158,12 +160,27 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen pt-28 pb-16 px-4">
+      <motion.div
+        className="min-h-screen pt-28 pb-16 px-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="mb-6 rounded-full bg-gray-100 p-6">
+          <motion.div
+            className="flex flex-col items-center justify-center py-20 text-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.div
+              className="mb-6 rounded-full bg-gray-100 p-6"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15 }}
+            >
               <ShoppingBag className="h-12 w-12 text-muted-foreground" />
-            </div>
+            </motion.div>
             <h1 className="text-2xl font-serif font-bold text-luxury-black mb-2">
               Your cart is empty
             </h1>
@@ -173,16 +190,21 @@ export default function CheckoutPage() {
             <Button asChild>
               <Link href="/shop">Start Shopping</Link>
             </Button>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="min-h-screen pt-28 pb-16 px-4">
+    <motion.div
+      className="min-h-screen pt-28 pb-16 px-4"
+      variants={fadeUp}
+      initial="hidden"
+      animate="visible"
+    >
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
+        <motion.div className="mb-8" variants={fadeUp}>
           <Link
             href="/cart"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-luxury-black transition-colors"
@@ -193,104 +215,120 @@ export default function CheckoutPage() {
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-luxury-black mt-2">
             Checkout
           </h1>
-        </div>
+        </motion.div>
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-8">
-              <Card>
-                <CardContent className="p-6 space-y-4">
-                  <h2 className="text-lg font-semibold text-luxury-black">
-                    Contact Information
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Customer Name</Label>
-                      <Input
-                        id="name"
-                        value={form.name}
-                        onChange={(e) => updateField("name", e.target.value)}
-                        placeholder="John Doe"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={form.email}
-                        onChange={(e) => updateField("email", e.target.value)}
-                        placeholder="john@example.com"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        value={form.phone}
-                        onChange={(e) => updateField("phone", e.target.value)}
-                        placeholder="+94 77 123 4567"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2 sm:col-span-2">
-                      <Label htmlFor="address">Address</Label>
-                      <Textarea
-                        id="address"
-                        value={form.address}
-                        onChange={(e) => updateField("address", e.target.value)}
-                        placeholder="123 Main Street, Colombo 03"
-                        rows={3}
-                        required
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-6 space-y-4">
-                  <h2 className="text-lg font-semibold text-luxury-black">
-                    Payment Method
-                  </h2>
-                  <RadioGroup
-                    value={paymentMethod}
-                    onValueChange={setPaymentMethod}
-                    className="grid grid-cols-1 gap-3"
-                  >
-                    {PAYMENT_METHODS.map((method) => (
-                      <label
-                        key={method.id}
-                        className={`flex items-start gap-4 rounded-lg border p-4 cursor-pointer transition-colors ${
-                          paymentMethod === method.id
-                            ? "border-luxury-gold bg-gold-light/5"
-                            : "border-input hover:border-muted-foreground"
-                        }`}
-                      >
-                        <RadioGroupItem
-                          value={method.id}
-                          id={method.id}
-                          className="mt-0.5"
+            <motion.div
+              className="lg:col-span-2 space-y-8"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.div variants={staggerItemFast}>
+                <Card>
+                  <CardContent className="p-6 space-y-4">
+                    <h2 className="text-lg font-semibold text-luxury-black">
+                      Contact Information
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Customer Name</Label>
+                        <Input
+                          id="name"
+                          value={form.name}
+                          onChange={(e) => updateField("name", e.target.value)}
+                          placeholder="John Doe"
+                          required
                         />
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-luxury-black">
-                            {method.label}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            {method.description}
-                          </p>
-                        </div>
-                      </label>
-                    ))}
-                  </RadioGroup>
-                </CardContent>
-              </Card>
-            </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={form.email}
+                          onChange={(e) => updateField("email", e.target.value)}
+                          placeholder="john@example.com"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="phone">Phone</Label>
+                        <Input
+                          id="phone"
+                          type="tel"
+                          value={form.phone}
+                          onChange={(e) => updateField("phone", e.target.value)}
+                          placeholder="+94 77 123 4567"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label htmlFor="address">Address</Label>
+                        <Textarea
+                          id="address"
+                          value={form.address}
+                          onChange={(e) => updateField("address", e.target.value)}
+                          placeholder="123 Main Street, Colombo 03"
+                          rows={3}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
 
-            <div className="lg:col-span-1">
+              <motion.div variants={staggerItemFast}>
+                <Card>
+                  <CardContent className="p-6 space-y-4">
+                    <h2 className="text-lg font-semibold text-luxury-black">
+                      Payment Method
+                    </h2>
+                    <RadioGroup
+                      value={paymentMethod}
+                      onValueChange={setPaymentMethod}
+                      className="grid grid-cols-1 gap-3"
+                    >
+                      {PAYMENT_METHODS.map((method) => (
+                        <motion.label
+                          key={method.id}
+                          whileHover={{ scale: 1.01 }}
+                          whileTap={{ scale: 0.99 }}
+                          className={`flex items-start gap-4 rounded-lg border p-4 cursor-pointer transition-colors ${
+                            paymentMethod === method.id
+                              ? "border-luxury-gold bg-gold-light/5"
+                              : "border-input hover:border-muted-foreground"
+                          }`}
+                        >
+                          <RadioGroupItem
+                            value={method.id}
+                            id={method.id}
+                            className="mt-0.5"
+                          />
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-luxury-black">
+                              {method.label}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              {method.description}
+                            </p>
+                          </div>
+                        </motion.label>
+                      ))}
+                    </RadioGroup>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              className="lg:col-span-1"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
               <Card>
                 <CardContent className="p-6">
                   <OrderSummary items={items} totalPrice={totalPrice} />
@@ -304,10 +342,10 @@ export default function CheckoutPage() {
                   </Button>
                 </CardContent>
               </Card>
-            </div>
+            </motion.div>
           </div>
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 }

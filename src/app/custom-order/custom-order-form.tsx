@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { staggerContainer, staggerItemFast } from "@/lib/animations";
 
 const FURNITURE_TYPES = ["Chair", "Desk", "Table", "Cabinet", "Sofa", "Bed", "Other"];
 
@@ -60,13 +62,21 @@ export default function CustomOrderForm() {
   }
 
   return (
-    <form
+    <motion.form
       onSubmit={handleSubmit}
       className="space-y-6 bg-white rounded-xl border border-gray-100 p-8 shadow-sm"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
     >
-      <h3 className="text-2xl font-serif font-bold text-luxury-black">Request a Custom Order</h3>
+      <motion.h3
+        variants={staggerItemFast}
+        className="text-2xl font-serif font-bold text-luxury-black"
+      >
+        Request a Custom Order
+      </motion.h3>
 
-      <div className="grid sm:grid-cols-2 gap-4">
+      <motion.div variants={staggerItemFast} className="grid sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="customerName">Full Name *</Label>
           <Input
@@ -88,9 +98,9 @@ export default function CustomOrderForm() {
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
         </div>
-      </div>
+      </motion.div>
 
-      <div className="grid sm:grid-cols-2 gap-4">
+      <motion.div variants={staggerItemFast} className="grid sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="phone">Phone *</Label>
           <Input
@@ -109,7 +119,7 @@ export default function CustomOrderForm() {
             required
             value={formData.furnitureType}
             onChange={(e) => setFormData({ ...formData, furnitureType: e.target.value })}
-            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 focus-visible:border-gold"
           >
             <option value="">Select a type</option>
             {FURNITURE_TYPES.map((type) => (
@@ -119,9 +129,9 @@ export default function CustomOrderForm() {
             ))}
           </select>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="space-y-2">
+      <motion.div variants={staggerItemFast} className="space-y-2">
         <Label htmlFor="description">Description *</Label>
         <Textarea
           id="description"
@@ -131,9 +141,9 @@ export default function CustomOrderForm() {
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
         />
-      </div>
+      </motion.div>
 
-      <div className="grid sm:grid-cols-2 gap-4">
+      <motion.div variants={staggerItemFast} className="grid sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="dimensions">Dimensions</Label>
           <Input
@@ -154,15 +164,17 @@ export default function CustomOrderForm() {
             }
           />
         </div>
-      </div>
+      </motion.div>
 
-      <Button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-gold hover:bg-gold-dark text-white"
-      >
-        {loading ? "Submitting..." : "Submit Custom Order"}
-      </Button>
-    </form>
+      <motion.div variants={staggerItemFast}>
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-gold hover:bg-gold-dark text-white"
+        >
+          {loading ? "Submitting..." : "Submit Custom Order"}
+        </Button>
+      </motion.div>
+    </motion.form>
   );
 }

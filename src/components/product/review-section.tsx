@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Star } from "lucide-react";
+import { staggerContainer, staggerItemFast } from "@/lib/animations";
 
 interface Review {
   id: string;
@@ -70,12 +72,21 @@ export default function ReviewSection({ productId }: ReviewSectionProps) {
   };
 
   return (
-    <div className="mt-12">
-      <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6">
+    <motion.div
+      className="mt-12"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-50px" }}
+    >
+      <motion.h2
+        variants={staggerItemFast}
+        className="text-2xl font-serif font-bold text-luxury-black mb-6"
+      >
         Customer Reviews
-      </h2>
+      </motion.h2>
 
-      <form
+      <motion.form
+        variants={staggerItemFast}
         onSubmit={handleSubmit}
         className="mb-8 p-6 border rounded-lg bg-gray-50 space-y-4"
       >
@@ -94,20 +105,22 @@ export default function ReviewSection({ productId }: ReviewSectionProps) {
           <Label>Rating</Label>
           <div className="flex gap-1 mt-1">
             {[1, 2, 3, 4, 5].map((star) => (
-              <button
+              <motion.button
                 key={star}
                 type="button"
                 onClick={() => setRating(star)}
                 className="p-1"
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
               >
                 <Star
-                  className={`h-6 w-6 ${
+                  className={`h-6 w-6 transition-colors ${
                     star <= rating
                       ? "fill-gold text-gold"
                       : "text-gray-300"
                   }`}
                 />
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
@@ -129,7 +142,7 @@ export default function ReviewSection({ productId }: ReviewSectionProps) {
         >
           {submitting ? "Submitting..." : "Submit Review"}
         </Button>
-      </form>
+      </motion.form>
 
       {loading ? (
         <div className="space-y-4">
@@ -138,38 +151,52 @@ export default function ReviewSection({ productId }: ReviewSectionProps) {
           ))}
         </div>
       ) : reviews.length > 0 ? (
-        <div className="space-y-4">
-          {reviews.map((review) => (
-            <div
-              key={review.id}
-              className="p-4 border rounded-lg"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-semibold text-luxury-black">
-                  {review.name}
-                </span>
-                <div className="flex gap-0.5">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className={`h-4 w-4 ${
-                        star <= review.rating
-                          ? "fill-gold text-gold"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          className="space-y-4"
+        >
+          <AnimatePresence>
+            {reviews.map((review) => (
+              <motion.div
+                key={review.id}
+                variants={staggerItemFast}
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-4 border rounded-lg"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold text-luxury-black">
+                    {review.name}
+                  </span>
+                  <div className="flex gap-0.5">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-4 w-4 ${
+                          star <= review.rating
+                            ? "fill-gold text-gold"
+                            : "text-gray-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <p className="text-muted-foreground">{review.comment}</p>
-            </div>
-          ))}
-        </div>
+                <p className="text-muted-foreground">{review.comment}</p>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       ) : (
-        <p className="text-muted-foreground text-center py-8">
+        <motion.p
+          variants={staggerItemFast}
+          className="text-muted-foreground text-center py-8"
+        >
           No reviews yet. Be the first to review this product!
-        </p>
+        </motion.p>
       )}
-    </div>
+    </motion.div>
   );
 }

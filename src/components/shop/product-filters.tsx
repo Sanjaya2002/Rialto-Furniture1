@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Search, SlidersHorizontal, X } from "lucide-react";
+import { fadeUpSmall } from "@/lib/animations";
 
 interface Category {
   id: string;
@@ -127,15 +129,21 @@ export default function ProductFilters() {
         </Select>
 
         {hasFilters && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearFilters}
-            className="text-muted-foreground"
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
           >
-            <X className="h-4 w-4 mr-1" />
-            Clear
-          </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearFilters}
+              className="text-muted-foreground"
+            >
+              <X className="h-4 w-4 mr-1" />
+              Clear
+            </Button>
+          </motion.div>
         )}
       </div>
     </>
@@ -143,25 +151,41 @@ export default function ProductFilters() {
 
   return (
     <>
-      <div className="hidden md:flex flex-col gap-4 mb-8">{filtersContent}</div>
+      <motion.div
+        className="hidden md:flex flex-col gap-4 mb-8"
+        variants={fadeUpSmall}
+        initial="hidden"
+        animate="visible"
+      >
+        {filtersContent}
+      </motion.div>
 
       <div className="md:hidden mb-4">
-        <Button
-          variant="outline"
-          className="w-full"
+        <motion.button
+          className="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
           onClick={() => setShowMobileFilters(!showMobileFilters)}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
         >
           <SlidersHorizontal className="h-4 w-4 mr-2" />
           Filters
           {hasFilters && (
             <span className="ml-2 w-2 h-2 rounded-full bg-gold" />
           )}
-        </Button>
-        {showMobileFilters && (
-          <div className="flex flex-col gap-4 mt-4 p-4 border rounded-lg bg-white">
-            {filtersContent}
-          </div>
-        )}
+        </motion.button>
+        <AnimatePresence>
+          {showMobileFilters && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="flex flex-col gap-4 mt-4 p-4 border rounded-lg bg-white overflow-hidden"
+            >
+              {filtersContent}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );

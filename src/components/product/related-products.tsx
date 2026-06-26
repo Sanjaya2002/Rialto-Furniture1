@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import ProductCard from "@/components/shop/product-card";
+import { staggerContainer, staggerItem } from "@/lib/animations";
 
 interface Product {
   id: string;
@@ -49,10 +51,18 @@ export default function RelatedProducts({
   if (!loading && products.length === 0) return null;
 
   return (
-    <div className="mt-16">
-      <h2 className="text-2xl font-serif font-bold text-luxury-black mb-8">
+    <motion.div
+      className="mt-16"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-50px" }}
+    >
+      <motion.h2
+        variants={staggerItem}
+        className="text-2xl font-serif font-bold text-luxury-black mb-8"
+      >
         Related Products
-      </h2>
+      </motion.h2>
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
@@ -60,12 +70,17 @@ export default function RelatedProducts({
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <motion.div
+          variants={staggerContainer}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
           {products.slice(0, 4).map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <motion.div key={product.id} variants={staggerItem}>
+              <ProductCard product={product} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }

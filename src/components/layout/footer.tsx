@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { Phone, Mail, MapPin, Music2 } from "lucide-react";
 import { SITE_CONFIG, SOCIAL_LINKS, FOOTER_LINKS } from "@/lib/constants";
+import { staggerContainer, staggerItemFast, fadeUp } from "@/lib/animations";
 
 function FacebookIcon({ className }: { className?: string }) {
   return (
@@ -30,83 +32,87 @@ function LinkedInIcon({ className }: { className?: string }) {
   );
 }
 
+const MotionLink = motion.create(Link);
+
 export function Footer() {
   return (
-    <footer className="bg-luxury-black text-white/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          <div>
+    <motion.footer
+      className="bg-luxury-black text-white/80"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-50px" }}
+    >
+      <motion.div variants={fadeUp} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <motion.div
+          variants={staggerContainer}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"
+        >
+          <motion.div variants={staggerItemFast}>
             <h3 className="text-2xl font-serif font-bold gold-text mb-4">Rialto Furniture</h3>
             <p className="text-sm text-white/60 leading-relaxed mb-6">
               {SITE_CONFIG.tagline}. Premium furniture for offices, businesses, and commercial spaces across Sri Lanka.
             </p>
             <div className="flex gap-3">
-              <a
-                href={SOCIAL_LINKS.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors"
-                aria-label="Facebook"
-              >
-                <FacebookIcon className="h-4 w-4" />
-              </a>
-              <a
-                href={SOCIAL_LINKS.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors"
-                aria-label="Instagram"
-              >
-                <InstagramIcon className="h-4 w-4" />
-              </a>
-              <a
-                href={SOCIAL_LINKS.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors"
-                aria-label="LinkedIn"
-              >
-                <LinkedInIcon className="h-4 w-4" />
-              </a>
-              <a
-                href={SOCIAL_LINKS.tiktok}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors"
-                aria-label="TikTok"
-              >
-                <Music2 className="h-4 w-4" />
-              </a>
+              {[
+                { href: SOCIAL_LINKS.facebook, label: "Facebook", icon: FacebookIcon },
+                { href: SOCIAL_LINKS.instagram, label: "Instagram", icon: InstagramIcon },
+                { href: SOCIAL_LINKS.linkedin, label: "LinkedIn", icon: LinkedInIcon },
+                { href: SOCIAL_LINKS.tiktok, label: "TikTok", icon: Music2 },
+              ].map(({ href, label, icon: Icon }) => (
+                <motion.a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors"
+                  aria-label={label}
+                  whileHover={{ scale: 1.15, borderColor: "#D4AF37", color: "#D4AF37" }}
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Icon className="h-4 w-4" />
+                </motion.a>
+              ))}
             </div>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div variants={staggerItemFast}>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">Quick Links</h4>
             <ul className="space-y-3">
               {FOOTER_LINKS.quickLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-white/60 hover:text-gold transition-colors">
+                  <MotionLink
+                    href={link.href}
+                    className="text-sm text-white/60 hover:text-gold transition-colors inline-block"
+                    whileHover={{ x: 4, color: "#D4AF37" }}
+                    transition={{ duration: 0.2 }}
+                  >
                     {link.label}
-                  </Link>
+                  </MotionLink>
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div variants={staggerItemFast}>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">Categories</h4>
             <ul className="space-y-3">
               {FOOTER_LINKS.categories.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-white/60 hover:text-gold transition-colors">
+                  <MotionLink
+                    href={link.href}
+                    className="text-sm text-white/60 hover:text-gold transition-colors inline-block"
+                    whileHover={{ x: 4, color: "#D4AF37" }}
+                    transition={{ duration: 0.2 }}
+                  >
                     {link.label}
-                  </Link>
+                  </MotionLink>
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div variants={staggerItemFast}>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">Contact</h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
@@ -115,26 +121,37 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-gold shrink-0" />
-                <a href={`tel:${SITE_CONFIG.phone}`} className="text-sm text-white/60 hover:text-gold transition-colors">
+                <motion.a
+                  href={`tel:${SITE_CONFIG.phone}`}
+                  className="text-sm text-white/60 hover:text-gold transition-colors"
+                  whileHover={{ color: "#D4AF37" }}
+                >
                   {SITE_CONFIG.phone}
-                </a>
+                </motion.a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-gold shrink-0" />
-                <a href={`mailto:${SITE_CONFIG.email}`} className="text-sm text-white/60 hover:text-gold transition-colors">
+                <motion.a
+                  href={`mailto:${SITE_CONFIG.email}`}
+                  className="text-sm text-white/60 hover:text-gold transition-colors"
+                  whileHover={{ color: "#D4AF37" }}
+                >
                   {SITE_CONFIG.email}
-                </a>
+                </motion.a>
               </li>
             </ul>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        <div className="mt-12 pt-8 border-t border-white/10 text-center">
+        <motion.div
+          variants={fadeUp}
+          className="mt-12 pt-8 border-t border-white/10 text-center"
+        >
           <p className="text-sm text-white/40">
             &copy; {new Date().getFullYear()} {SITE_CONFIG.name}. All rights reserved.
           </p>
-        </div>
-      </div>
-    </footer>
+        </motion.div>
+      </motion.div>
+    </motion.footer>
   );
 }
