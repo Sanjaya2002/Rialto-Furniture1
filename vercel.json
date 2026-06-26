@@ -3,16 +3,5 @@
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
-  "outputDirectory": ".next",
-  "env": {
-    "DATABASE_URL": "@database_url",
-    "NEXT_PUBLIC_SITE_URL": "@next_public_site_url",
-    "NEXT_PUBLIC_WHATSAPP_NUMBER": "@next_public_whatsapp_number",
-    "SUPABASE_URL": "@supabase_url",
-    "SUPABASE_ANON_KEY": "@supabase_anon_key",
-    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key",
-    "PAYHERE_MERCHANT_ID": "@payhere_merchant_id",
-    "PAYHERE_MERCHANT_SECRET": "@payhere_merchant_secret",
-    "KOKO_API_KEY": "@koko_api_key"
-  }
+  "outputDirectory": ".next"
 }
