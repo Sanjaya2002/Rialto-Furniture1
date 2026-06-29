@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/api-auth";
+import { sendOrderConfirmation } from "@/lib/email";
 
 export async function GET(request: NextRequest) {
   try {
@@ -57,6 +58,7 @@ export async function POST(request: NextRequest) {
     }
 
     const productMap = new Map(products.map((p) => [p.id, p.price]));
+    const productNameMap = new Map(products.map((p) => [p.id, p.name]));
 
     let totalAmount = 0;
     const orderItems = itemsData.map((item) => {
@@ -83,6 +85,21 @@ export async function POST(request: NextRequest) {
       },
       include: { items: true },
     });
+
+    sendOrderConfirmation({
+      id: order.id,
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      address: order.address,
+      paymentMethod: order.paymentMethod || "cod",
+      totalAmount: order.totalAmount,
+      createdAt: order.createdAt,
+      items: order.items.map((item) => ({
+        name: productNameMap.get(item.productId) || "Product",
+        quantity: item.quantity,
+        price: item.price,
+      })),
+    }).catch((err) => console.error("Failed to send confirmation email:", err));
 
     return NextResponse.json(order, { status: 201 });
   } catch (error) {
