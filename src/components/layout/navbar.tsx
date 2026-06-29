@@ -53,10 +53,7 @@ export function Navbar() {
                 whileHover="hover"
               >
                 {link.label}
-                <motion.span
-                  className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-gold rounded-full"
-                  variants={navLinkUnderline}
-                />
+                
               </MotionLink>
             ))}
           </div>
