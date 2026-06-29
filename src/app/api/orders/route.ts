@@ -38,9 +38,23 @@ export async function POST(request: NextRequest) {
 
     const itemsData = body.items as { productId: string; quantity: number }[];
 
+    const productIds = itemsData.map((i) => i.productId);
+
     const products = await prisma.product.findMany({
-      where: { id: { in: itemsData.map((i) => i.productId) } },
+      where: { id: { in: productIds } },
     });
+
+    if (products.length !== productIds.length) {
+      const foundIds = new Set(products.map((p) => p.id));
+      const missingIds = productIds.filter((id) => !foundIds.has(id));
+      return NextResponse.json(
+        {
+          error: `Some products in your cart no longer exist. Please remove them and try again.`,
+          missingIds,
+        },
+        { status: 400 }
+      );
+    }
 
     const productMap = new Map(products.map((p) => [p.id, p.price]));
 

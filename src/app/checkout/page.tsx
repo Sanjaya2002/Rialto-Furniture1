@@ -62,8 +62,8 @@ export default function CheckoutPage() {
     try {
       const orderData = {
         customerName: form.name,
-        email: form.email,
-        phone: form.phone,
+        customerEmail: form.email,
+        customerPhone: form.phone,
         address: form.address,
         items: items.map((i) => ({
           productId: i.productId,
