@@ -24,8 +24,8 @@ export function WhatsAppButton() {
         className="absolute inset-0 rounded-full bg-green-500"
         animate={{
           boxShadow: [
-            "0 0 0 0 rgba(212,175,55,0.4)",
-            "0 0 0 10px rgba(212,175,55,0)",
+            "0 0 0 0 rgba(201,163,78,0.4)",
+            "0 0 0 10px rgba(201,163,78,0)",
           ],
         }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}

@@ -21,7 +21,7 @@ export function Navbar() {
     <motion.header
       className="fixed top-0 left-0 right-0 z-50 border-b border-white/10"
       animate={{
-        backgroundColor: isScrolled ? "rgba(11, 11, 11, 0.95)" : "rgba(11, 11, 11, 0.8)",
+        backgroundColor: isScrolled ? "rgba(24, 52, 74, 0.95)" : "rgba(24, 52, 74, 0.8)",
         backdropFilter: isScrolled ? "blur(12px)" : "blur(0px)",
         boxShadow: isScrolled ? "0 1px 3px rgba(0,0,0,0.3)" : "0 0 0 rgba(0,0,0,0)",
       }}

@@ -84,7 +84,7 @@ export default function AdminReviewsPage() {
         <p className="mt-1 text-sm text-gray-400">Manage customer product reviews</p>
       </div>
 
-      <div className="rounded-lg border border-border bg-[#1A1A1A]">
+      <div className="rounded-lg border border-border bg-[#1E3D55]">
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
@@ -145,7 +145,7 @@ export default function AdminReviewsPage() {
       </div>
 
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent className="border-border bg-[#1A1A1A]">
+        <DialogContent className="border-border bg-[#1E3D55]">
           <DialogHeader>
             <DialogTitle className="text-white">Confirm Delete</DialogTitle>
             <DialogDescription className="text-gray-400">

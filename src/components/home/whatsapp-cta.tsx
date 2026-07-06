@@ -47,7 +47,7 @@ export default function WhatsAppCTA() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 bg-luxury-black text-white px-8 py-4 rounded-lg text-lg font-semibold shadow-lg"
-                whileHover={{ scale: 1.03, backgroundColor: "#1A1A1A" }}
+                whileHover={{ scale: 1.03, backgroundColor: "#18344A" }}
                 whileTap={{ scale: 0.97 }}
                 transition={{ duration: 0.2 }}
               >

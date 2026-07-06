@@ -201,7 +201,7 @@ export default function AdminProductsPage() {
         </Button>
       </div>
 
-      <div className="rounded-lg border border-border bg-[#1A1A1A]">
+      <div className="rounded-lg border border-border bg-[#1E3D55]">
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
@@ -285,7 +285,7 @@ export default function AdminProductsPage() {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto border-border bg-[#1A1A1A]">
+        <DialogContent className="max-h-[90vh] overflow-y-auto border-border bg-[#1E3D55]">
           <DialogHeader>
             <DialogTitle className="text-white">
               {editingProduct ? "Edit Product" : "Add Product"}
@@ -300,7 +300,7 @@ export default function AdminProductsPage() {
               <Input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="border-border bg-[#0B0B0B] text-white"
+                className="border-border bg-[#18344A] text-white"
               />
             </div>
             <div className="grid gap-2">
@@ -308,7 +308,7 @@ export default function AdminProductsPage() {
               <Textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                className="border-border bg-[#0B0B0B] text-white"
+                className="border-border bg-[#18344A] text-white"
                 rows={3}
               />
             </div>
@@ -319,7 +319,7 @@ export default function AdminProductsPage() {
                   type="number"
                   value={form.price}
                   onChange={(e) => setForm({ ...form, price: e.target.value })}
-                  className="border-border bg-[#0B0B0B] text-white"
+                  className="border-border bg-[#18344A] text-white"
                 />
               </div>
               <div className="grid gap-2">
@@ -328,7 +328,7 @@ export default function AdminProductsPage() {
                   type="number"
                   value={form.stock}
                   onChange={(e) => setForm({ ...form, stock: e.target.value })}
-                  className="border-border bg-[#0B0B0B] text-white"
+                  className="border-border bg-[#18344A] text-white"
                 />
               </div>
             </div>
@@ -338,10 +338,10 @@ export default function AdminProductsPage() {
                 value={form.categoryId}
                 onValueChange={(v) => setForm({ ...form, categoryId: v })}
               >
-                <SelectTrigger className="border-border bg-[#0B0B0B] text-white">
+                <SelectTrigger className="border-border bg-[#18344A] text-white">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
-                <SelectContent className="border-border bg-[#1A1A1A] text-white">
+                <SelectContent className="border-border bg-[#1E3D55] text-white">
                   {categories.map((cat) => (
                     <SelectItem key={cat.id} value={cat.id}>
                       {cat.name}
@@ -356,7 +356,7 @@ export default function AdminProductsPage() {
                 value={form.images}
                 onChange={(e) => setForm({ ...form, images: e.target.value })}
                 placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-                className="border-border bg-[#0B0B0B] text-white placeholder:text-gray-600"
+                className="border-border bg-[#18344A] text-white placeholder:text-gray-600"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -365,7 +365,7 @@ export default function AdminProductsPage() {
                 id="featured"
                 checked={form.featured}
                 onChange={(e) => setForm({ ...form, featured: e.target.checked })}
-                className="h-4 w-4 rounded border-border bg-[#0B0B0B] text-gold accent-gold"
+                className="h-4 w-4 rounded border-border bg-[#18344A] text-gold accent-gold"
               />
               <Label htmlFor="featured" className="text-gray-300">
                 Featured product
@@ -376,7 +376,7 @@ export default function AdminProductsPage() {
               <Textarea
                 value={form.specifications}
                 onChange={(e) => setForm({ ...form, specifications: e.target.value })}
-                className="border-border bg-[#0B0B0B] font-mono text-xs text-white"
+                className="border-border bg-[#18344A] font-mono text-xs text-white"
                 rows={5}
                 placeholder='{"material": "Wood", "weight": "10kg"}'
               />
@@ -406,7 +406,7 @@ export default function AdminProductsPage() {
       </Dialog>
 
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent className="border-border bg-[#1A1A1A]">
+        <DialogContent className="border-border bg-[#1E3D55]">
           <DialogHeader>
             <DialogTitle className="text-white">Confirm Delete</DialogTitle>
             <DialogDescription className="text-gray-400">

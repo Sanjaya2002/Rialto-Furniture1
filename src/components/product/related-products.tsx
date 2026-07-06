@@ -66,7 +66,7 @@ export default function RelatedProducts({
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-80 rounded-lg bg-gray-100 animate-pulse" />
+            <div key={i} className="h-80 rounded-lg bg-luxury-gray animate-pulse" />
           ))}
         </div>
       ) : (

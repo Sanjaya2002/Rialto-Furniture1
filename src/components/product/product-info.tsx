@@ -74,7 +74,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         <div className="flex items-center border rounded-md">
           <motion.button
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="p-2 hover:bg-gray-100 transition-colors"
+            className="p-2 hover:bg-muted transition-colors"
             disabled={quantity <= 1}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -92,7 +92,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           </motion.span>
           <motion.button
             onClick={() => setQuantity(quantity + 1)}
-            className="p-2 hover:bg-gray-100 transition-colors"
+            className="p-2 hover:bg-muted transition-colors"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >

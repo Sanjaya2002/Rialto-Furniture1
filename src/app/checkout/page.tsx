@@ -174,7 +174,7 @@ export default function CheckoutPage() {
             transition={{ duration: 0.6 }}
           >
             <motion.div
-              className="mb-6 rounded-full bg-gray-100 p-6"
+              className="mb-6 rounded-full bg-luxury-gray p-6"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 15 }}

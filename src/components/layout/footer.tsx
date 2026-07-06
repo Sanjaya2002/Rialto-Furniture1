@@ -66,7 +66,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:border-gold hover:text-gold transition-colors"
                   aria-label={label}
-                  whileHover={{ scale: 1.15, borderColor: "#D4AF37", color: "#D4AF37" }}
+                  whileHover={{ scale: 1.15, borderColor: "#C9A34E", color: "#C9A34E" }}
                   whileTap={{ scale: 0.9 }}
                   transition={{ duration: 0.2 }}
                 >
@@ -84,7 +84,7 @@ export function Footer() {
                   <MotionLink
                     href={link.href}
                     className="text-sm text-white/60 hover:text-gold transition-colors inline-block"
-                    whileHover={{ x: 4, color: "#D4AF37" }}
+                    whileHover={{ x: 4, color: "#C9A34E" }}
                     transition={{ duration: 0.2 }}
                   >
                     {link.label}
@@ -102,7 +102,7 @@ export function Footer() {
                   <MotionLink
                     href={link.href}
                     className="text-sm text-white/60 hover:text-gold transition-colors inline-block"
-                    whileHover={{ x: 4, color: "#D4AF37" }}
+                    whileHover={{ x: 4, color: "#C9A34E" }}
                     transition={{ duration: 0.2 }}
                   >
                     {link.label}
@@ -124,7 +124,7 @@ export function Footer() {
                 <motion.a
                   href={`tel:${SITE_CONFIG.phone}`}
                   className="text-sm text-white/60 hover:text-gold transition-colors"
-                  whileHover={{ color: "#D4AF37" }}
+                  whileHover={{ color: "#C9A34E" }}
                 >
                   {SITE_CONFIG.phone}
                 </motion.a>
@@ -134,7 +134,7 @@ export function Footer() {
                 <motion.a
                   href={`mailto:${SITE_CONFIG.email}`}
                   className="text-sm text-white/60 hover:text-gold transition-colors"
-                  whileHover={{ color: "#D4AF37" }}
+                  whileHover={{ color: "#C9A34E" }}
                 >
                   {SITE_CONFIG.email}
                 </motion.a>

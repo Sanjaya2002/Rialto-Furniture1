@@ -30,7 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (checking) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0B0B0B]">
+      <div className="flex min-h-screen items-center justify-center bg-[#18344A]">
         <Loader2 className="h-6 w-6 animate-spin text-gold" />
       </div>
     )
@@ -41,7 +41,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="flex min-h-screen bg-[#0B0B0B]">
+    <div className="flex min-h-screen bg-[#18344A]">
       <AdminSidebar />
       <main className="ml-60 flex-1 p-8">{children}</main>
     </div>

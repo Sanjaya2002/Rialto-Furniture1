@@ -29,7 +29,7 @@ export default function CartPage() {
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <motion.div
-              className="mb-6 rounded-full bg-gray-100 p-6"
+              className="mb-6 rounded-full bg-luxury-gray p-6"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 15 }}
@@ -88,7 +88,7 @@ export default function CartPage() {
                 >
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center px-4 py-4">
                     <div className="md:col-span-5 flex items-center gap-4">
-                      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-gray-100">
+                      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-luxury-gray">
                         <img
                           src={item.image}
                           alt={item.name}

@@ -63,7 +63,7 @@ export default function FeaturedProducts() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-96 rounded-lg bg-gray-100 animate-pulse" />
+              <div key={i} className="h-96 rounded-lg bg-luxury-gray animate-pulse" />
             ))}
           </div>
         ) : error ? (
@@ -87,8 +87,8 @@ export default function FeaturedProducts() {
             {products.map((product) => (
               <motion.div key={product._id} variants={itemVariants}>
                 <Link href={`/product/${product.slug}`}>
-                  <Card className="group overflow-hidden border border-gray-100 hover:border-gold transition-all duration-300 cursor-pointer h-full">
-                    <div className="relative h-64 overflow-hidden bg-gray-50">
+                  <Card className="group overflow-hidden border border-border hover:border-gold transition-all duration-300 cursor-pointer h-full">
+                    <div className="relative h-64 overflow-hidden bg-luxury-gray">
                       <img
                         src={product.images?.[0] || "https://images.unsplash.com/photo-1506439773649-6f0e8a9e5d7d?w=800&q=80"}
                         alt={product.name}

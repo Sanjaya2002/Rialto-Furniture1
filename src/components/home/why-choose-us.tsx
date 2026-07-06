@@ -48,13 +48,13 @@ export default function WhyChooseUs() {
               <motion.div
                 key={item.title}
                 variants={itemVariants}
-                className="group text-center p-8 rounded-lg bg-white border border-gray-100 hover:border-gold/50 shadow-sm hover:shadow-lg transition-all duration-300"
+                className="group text-center p-8 rounded-lg bg-card border border-border hover:border-gold/50 shadow-sm hover:shadow-lg transition-all duration-300"
               >
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold/10 mb-5 group-hover:bg-gold/20 transition-colors">
                   {Icon && <Icon className="w-8 h-8 text-gold" />}
                 </div>
                 <h3 className="text-xl font-serif font-bold text-luxury-black mb-3">{item.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                <p className="text-muted-foreground leading-relaxed">{item.description}</p>
               </motion.div>
             );
           })}

@@ -72,7 +72,7 @@ export default function AdminDashboardPage() {
         />
       </div>
 
-      <Card className="border-border bg-[#1A1A1A]">
+      <Card className="border-border bg-[#1E3D55]">
         <CardHeader>
           <CardTitle className="text-lg text-white">Recent Orders</CardTitle>
         </CardHeader>
@@ -128,7 +128,7 @@ function StatCard({
   loading: boolean
 }) {
   return (
-    <Card className="border-border bg-[#1A1A1A]">
+    <Card className="border-border bg-[#1E3D55]">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium text-gray-400">{label}</CardTitle>
         <Icon className="h-4 w-4 text-gold" />

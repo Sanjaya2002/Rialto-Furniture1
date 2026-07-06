@@ -180,7 +180,7 @@ export default function ProductFilters() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="flex flex-col gap-4 mt-4 p-4 border rounded-lg bg-white overflow-hidden"
+              className="flex flex-col gap-4 mt-4 p-4 border rounded-lg bg-card overflow-hidden"
             >
               {filtersContent}
             </motion.div>

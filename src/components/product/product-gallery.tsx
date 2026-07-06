@@ -12,7 +12,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
 
   if (!images || images.length === 0) {
     return (
-      <div className="aspect-square rounded-lg bg-gray-100 flex items-center justify-center">
+      <div className="aspect-square rounded-lg bg-luxury-gray flex items-center justify-center">
         <span className="text-muted-foreground">No image available</span>
       </div>
     );
@@ -20,7 +20,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
 
   return (
     <div className="space-y-4">
-      <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-50 group">
+      <div className="relative aspect-square overflow-hidden rounded-lg bg-luxury-gray group">
         <AnimatePresence mode="wait">
           <motion.img
             key={selectedIndex}
@@ -35,7 +35,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
         </AnimatePresence>
         <motion.div
           className="absolute inset-0"
-          whileHover={{ backgroundColor: "rgba(0,0,0,0.05)" }}
+          whileHover={{ backgroundColor: "rgba(24,52,74,0.05)" }}
           transition={{ duration: 0.3 }}
         />
       </div>
@@ -48,7 +48,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
               className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 transition-colors ${
                 idx === selectedIndex
                   ? "border-gold"
-                  : "border-transparent hover:border-gray-300"
+                  : "border-transparent hover:border-muted-foreground/30"
               }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

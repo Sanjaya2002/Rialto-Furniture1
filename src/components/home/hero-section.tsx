@@ -32,7 +32,7 @@ export default function HeroSection() {
           alt="Elegant living room with premium furniture"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#18344A]/80 via-[#18344A]/60 to-[#18344A]/70" />
       </motion.div>
 
       <motion.div
@@ -50,7 +50,7 @@ export default function HeroSection() {
 
         <motion.p
           variants={itemVariants}
-          className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed"
+          className="text-lg md:text-xl text-white/70 mb-10 max-w-2xl mx-auto leading-relaxed"
         >
           {SITE_CONFIG.description}
         </motion.p>

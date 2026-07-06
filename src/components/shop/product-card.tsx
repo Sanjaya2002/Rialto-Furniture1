@@ -48,10 +48,10 @@ export default function ProductCard({ product }: ProductCardProps) {
       whileHover="hover"
       className="h-full"
     >
-      <Card className="group overflow-hidden border border-gray-100 hover:border-gold transition-colors duration-300 h-full flex flex-col">
+      <Card className="group overflow-hidden border border-border hover:border-gold transition-colors duration-300 h-full flex flex-col">
         <MotionLink
           href={`/product/${product.slug}`}
-          className="relative h-64 overflow-hidden bg-gray-50 block"
+          className="relative h-64 overflow-hidden bg-luxury-gray block"
         >
           <motion.img
             src={product.images?.[0] || "/placeholder.svg"}
@@ -67,8 +67,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           <motion.div
             className="absolute inset-0 bg-black/0"
             variants={{
-              rest: { backgroundColor: "rgba(0,0,0,0)" },
-              hover: { backgroundColor: "rgba(0,0,0,0.05)", transition: { duration: 0.3 } },
+              rest: { backgroundColor: "rgba(24,52,74,0)" },
+              hover: { backgroundColor: "rgba(24,52,74,0.05)", transition: { duration: 0.3 } },
             }}
           />
         </MotionLink>
@@ -76,7 +76,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <Link href={`/product/${product.slug}`}>
             <motion.h3
               className="font-serif font-semibold text-lg text-luxury-black line-clamp-1"
-              whileHover={{ color: "#D4AF37" }}
+              whileHover={{ color: "#C9A34E" }}
               transition={{ duration: 0.3 }}
             >
               {product.name}

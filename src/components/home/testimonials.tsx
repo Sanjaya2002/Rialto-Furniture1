@@ -56,7 +56,7 @@ export default function Testimonials() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-48 rounded-lg bg-gray-100 animate-pulse" />
+              <div key={i} className="h-48 rounded-lg bg-luxury-gray animate-pulse" />
             ))}
           </div>
         ) : (
@@ -69,20 +69,20 @@ export default function Testimonials() {
           >
             {reviews.map((review) => (
               <motion.div key={review._id} variants={itemVariants}>
-                <Card className="h-full border border-gray-100 hover:border-gold/50 transition-all duration-300">
+                <Card className="h-full border border-border hover:border-gold/50 transition-all duration-300">
                   <CardContent className="p-6 flex flex-col h-full">
                     <div className="flex items-center gap-1 mb-4">
                       {Array.from({ length: 5 }, (_, i) => (
                         <Star
                           key={i}
-                          className={`w-4 h-4 ${i < review.rating ? "fill-gold text-gold" : "fill-gray-200 text-gray-200"}`}
+                          className={`w-4 h-4 ${i < review.rating ? "fill-gold text-gold" : "fill-muted-foreground text-muted-foreground"}`}
                         />
                       ))}
                     </div>
-                    <p className="text-gray-700 italic leading-relaxed flex-1">&ldquo;{review.comment}&rdquo;</p>
-                    <div className="mt-4 pt-4 border-t border-gray-100">
+                    <p className="text-muted-foreground italic leading-relaxed flex-1">&ldquo;{review.comment}&rdquo;</p>
+                    <div className="mt-4 pt-4 border-t border-border">
                       <p className="font-semibold text-luxury-black">{review.name}</p>
-                      <p className="text-sm text-gray-500">{formatDate(new Date(review.createdAt))}</p>
+                      <p className="text-sm text-muted-foreground">{formatDate(new Date(review.createdAt))}</p>
                     </div>
                   </CardContent>
                 </Card>

@@ -93,7 +93,7 @@ export default function AdminCustomOrdersPage() {
         <p className="mt-1 text-sm text-gray-400">Manage custom furniture requests</p>
       </div>
 
-      <div className="rounded-lg border border-border bg-[#1A1A1A]">
+      <div className="rounded-lg border border-border bg-[#1E3D55]">
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
@@ -134,7 +134,7 @@ export default function AdminCustomOrdersPage() {
                         >
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="border-border bg-[#1A1A1A] text-white">
+                        <SelectContent className="border-border bg-[#1E3D55] text-white">
                           {STATUSES.map((s) => (
                             <SelectItem key={s} value={s}>
                               {s}
@@ -166,7 +166,7 @@ export default function AdminCustomOrdersPage() {
       </div>
 
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto border-border bg-[#1A1A1A]">
+        <DialogContent className="max-h-[90vh] overflow-y-auto border-border bg-[#1E3D55]">
           <DialogHeader>
             <DialogTitle className="text-white">Custom Order Details</DialogTitle>
             <DialogDescription className="text-gray-400">

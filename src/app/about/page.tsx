@@ -42,7 +42,7 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="bg-luxury-gray rounded-lg h-80 flex items-center justify-center">
-              <span className="text-muted-foreground">[Company Image]</span>
+              <img src="\image_123650291 (4).JPG" className="h-80" />
             </div>
           </div>
         </div>
@@ -51,7 +51,7 @@ export default function AboutPage() {
       <section className="py-20 bg-luxury-gray">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-white rounded-xl border border-gray-100 p-8 shadow-sm">
+            <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
               <h3 className="text-2xl font-serif font-bold text-luxury-black mb-4">Our Mission</h3>
               <div className="w-12 h-1 bg-gold mb-4" />
               <p className="text-muted-foreground leading-relaxed">
@@ -60,7 +60,7 @@ export default function AboutPage() {
                 to our customers across Sri Lanka.
               </p>
             </div>
-            <div className="bg-white rounded-xl border border-gray-100 p-8 shadow-sm">
+            <div className="bg-card rounded-xl border border-border p-8 shadow-sm">
               <h3 className="text-2xl font-serif font-bold text-luxury-black mb-4">Our Vision</h3>
               <div className="w-12 h-1 bg-gold mb-4" />
               <p className="text-muted-foreground leading-relaxed">
@@ -85,7 +85,7 @@ export default function AboutPage() {
             {WHY_CHOOSE_US.map((item) => (
               <div
                 key={item.title}
-                className="bg-white rounded-xl border border-gray-100 p-6 text-center shadow-sm hover:shadow-lg transition-shadow"
+                className="bg-card rounded-xl border border-border p-6 text-center shadow-sm hover:shadow-lg transition-shadow"
               >
                 <div className="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-gold text-xl font-bold">{item.icon[0]}</span>

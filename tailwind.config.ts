@@ -11,25 +11,29 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#0B0B0B",
-          foreground: "#FFFFFF",
+          DEFAULT: "#18344A",
+          foreground: "#F8F7F4",
         },
         gold: {
-          DEFAULT: "#D4AF37",
-          light: "#E6C86E",
-          dark: "#B8962E",
+          DEFAULT: "#C9A34E",
+          light: "#D4B96A",
+          dark: "#A8873A",
+        },
+        navy: {
+          DEFAULT: "#18344A",
+          light: "#285A84",
         },
         charcoal: {
-          DEFAULT: "#1A1A1A",
-          light: "#2A2A2A",
+          DEFAULT: "#18344A",
+          light: "#285A84",
         },
         luxury: {
-          black: "#0B0B0B",
-          gold: "#D4AF37",
-          "gold-light": "#E6C86E",
-          charcoal: "#1A1A1A",
-          white: "#FFFFFF",
-          gray: "#F5F5F5",
+          black: "#18344A",
+          gold: "#C9A34E",
+          "gold-light": "#D4B96A",
+          charcoal: "#18344A",
+          white: "#F8F7F4",
+          gray: "#ECECEC",
         },
         background: "var(--background)",
         foreground: "var(--foreground)",
@@ -83,10 +87,10 @@ const config: Config = {
           "0%": { transform: "translateX(100%)" },
           "100%": { transform: "translateX(0)" },
         },
-        "pulse-gold": {
-          "0%, 100%": { boxShadow: "0 0 0 0 rgba(212, 175, 55, 0.4)" },
-          "50%": { boxShadow: "0 0 0 10px rgba(212, 175, 55, 0)" },
-        },
+"pulse-gold": {
+  "0%, 100%": { boxShadow: "0 0 0 0 rgba(201, 163, 78, 0.4)" },
+  "50%": { boxShadow: "0 0 0 10px rgba(201, 163, 78, 0)" },
+},
       },
       animation: {
         "fade-up": "fade-up 0.6s ease-out",

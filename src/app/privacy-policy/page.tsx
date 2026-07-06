@@ -118,7 +118,7 @@ export default function PrivacyPolicyPage() {
             </ul>
           </PolicySection>
 
-          <div className="border-t border-gray-200 mt-12 pt-8 text-sm text-muted-foreground">
+          <div className="border-t border-border mt-12 pt-8 text-sm text-muted-foreground">
             &copy; {year} {SITE_CONFIG.name}. All rights reserved.
           </div>
         </div>

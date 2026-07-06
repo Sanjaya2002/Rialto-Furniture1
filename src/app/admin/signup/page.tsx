@@ -72,15 +72,15 @@ export default function AdminSignupPage() {
 
   if (checkingSession) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0B0B0B]">
+      <div className="flex min-h-screen items-center justify-center bg-[#18344A]">
         <Loader2 className="h-6 w-6 animate-spin text-gold" />
       </div>
     )
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0B0B0B] p-4">
-      <Card className="w-full max-w-sm border-border bg-[#1A1A1A]">
+    <div className="flex min-h-screen items-center justify-center bg-[#18344A] p-4">
+      <Card className="w-full max-w-sm border-border bg-[#1E3D55]">
         <CardHeader className="space-y-1 text-center">
           <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-gold">
             <span className="text-lg font-bold text-black">RF</span>
@@ -100,7 +100,7 @@ export default function AdminSignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="border-border bg-[#0B0B0B] text-white placeholder:text-gray-600"
+                className="border-border bg-[#18344A] text-white placeholder:text-gray-600"
               />
             </div>
             <div className="space-y-2">
@@ -112,7 +112,7 @@ export default function AdminSignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="border-border bg-[#0B0B0B] text-white placeholder:text-gray-600"
+                className="border-border bg-[#18344A] text-white placeholder:text-gray-600"
               />
             </div>
             <div className="space-y-2">
@@ -123,7 +123,7 @@ export default function AdminSignupPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="border-border bg-[#0B0B0B] text-white placeholder:text-gray-600"
+                className="border-border bg-[#18344A] text-white placeholder:text-gray-600"
               />
             </div>
             <div className="space-y-2">
@@ -134,7 +134,7 @@ export default function AdminSignupPage() {
                 value={adminSecretKey}
                 onChange={(e) => setAdminSecretKey(e.target.value)}
                 required
-                className="border-border bg-[#0B0B0B] text-white placeholder:text-gray-600"
+                className="border-border bg-[#18344A] text-white placeholder:text-gray-600"
               />
             </div>
             {error && (

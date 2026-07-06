@@ -14,7 +14,7 @@ export default function OrderSummary({ items, totalPrice }: OrderSummaryProps) {
       <div className="space-y-3">
         {items.map((item) => (
           <div key={item.id} className="flex items-start gap-3">
-            <div className="h-16 w-16 shrink-0 overflow-hidden rounded-md bg-gray-100">
+            <div className="h-16 w-16 shrink-0 overflow-hidden rounded-md bg-luxury-gray">
               <img
                 src={item.image}
                 alt={item.name}

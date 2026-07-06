@@ -64,7 +64,7 @@ export default function CustomOrderForm() {
   return (
     <motion.form
       onSubmit={handleSubmit}
-      className="space-y-6 bg-white rounded-xl border border-gray-100 p-8 shadow-sm"
+      className="space-y-6 bg-card rounded-xl border border-border p-8 shadow-sm"
       variants={staggerContainer}
       initial="hidden"
       animate="visible"

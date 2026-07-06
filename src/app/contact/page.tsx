@@ -28,21 +28,21 @@ export default function ContactPage() {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-xl border border-gray-100 p-6 text-center shadow-sm">
+            <div className="bg-card rounded-xl border border-border p-6 text-center shadow-sm">
               <div className="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-gold text-xl font-bold">P</span>
               </div>
               <h3 className="font-serif font-semibold text-lg mb-2">Phone</h3>
               <p className="text-muted-foreground">{SITE_CONFIG.phone}</p>
             </div>
-            <div className="bg-white rounded-xl border border-gray-100 p-6 text-center shadow-sm">
+            <div className="bg-card rounded-xl border border-border p-6 text-center shadow-sm">
               <div className="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-gold text-xl font-bold">@</span>
               </div>
               <h3 className="font-serif font-semibold text-lg mb-2">Email</h3>
               <p className="text-muted-foreground">{SITE_CONFIG.email}</p>
             </div>
-            <div className="bg-white rounded-xl border border-gray-100 p-6 text-center shadow-sm">
+            <div className="bg-card rounded-xl border border-border p-6 text-center shadow-sm">
               <div className="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-gold text-xl font-bold">A</span>
               </div>

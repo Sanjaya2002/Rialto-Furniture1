@@ -144,7 +144,7 @@ export default function AdminCategoriesPage() {
         </Button>
       </div>
 
-      <div className="rounded-lg border border-border bg-[#1A1A1A]">
+      <div className="rounded-lg border border-border bg-[#1E3D55]">
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
@@ -199,7 +199,7 @@ export default function AdminCategoriesPage() {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="border-border bg-[#1A1A1A]">
+        <DialogContent className="border-border bg-[#1E3D55]">
           <DialogHeader>
             <DialogTitle className="text-white">
               {editingCategory ? "Edit Category" : "Add Category"}
@@ -214,7 +214,7 @@ export default function AdminCategoriesPage() {
               <Input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="border-border bg-[#0B0B0B] text-white"
+                className="border-border bg-[#18344A] text-white"
               />
             </div>
             <div className="grid gap-2">
@@ -222,7 +222,7 @@ export default function AdminCategoriesPage() {
               <Textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                className="border-border bg-[#0B0B0B] text-white"
+                className="border-border bg-[#18344A] text-white"
                 rows={3}
               />
             </div>
@@ -232,7 +232,7 @@ export default function AdminCategoriesPage() {
                 value={form.image}
                 onChange={(e) => setForm({ ...form, image: e.target.value })}
                 placeholder="https://example.com/image.jpg"
-                className="border-border bg-[#0B0B0B] text-white placeholder:text-gray-600"
+                className="border-border bg-[#18344A] text-white placeholder:text-gray-600"
               />
             </div>
           </div>
@@ -260,7 +260,7 @@ export default function AdminCategoriesPage() {
       </Dialog>
 
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent className="border-border bg-[#1A1A1A]">
+        <DialogContent className="border-border bg-[#1E3D55]">
           <DialogHeader>
             <DialogTitle className="text-white">Confirm Delete</DialogTitle>
             <DialogDescription className="text-gray-400">

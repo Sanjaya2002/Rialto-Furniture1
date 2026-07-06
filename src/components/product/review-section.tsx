@@ -88,7 +88,7 @@ export default function ReviewSection({ productId }: ReviewSectionProps) {
       <motion.form
         variants={staggerItemFast}
         onSubmit={handleSubmit}
-        className="mb-8 p-6 border rounded-lg bg-gray-50 space-y-4"
+        className="mb-8 p-6 border rounded-lg bg-luxury-gray space-y-4"
       >
         <h3 className="font-semibold text-lg">Write a Review</h3>
         <div>
@@ -117,7 +117,7 @@ export default function ReviewSection({ productId }: ReviewSectionProps) {
                   className={`h-6 w-6 transition-colors ${
                     star <= rating
                       ? "fill-gold text-gold"
-                      : "text-gray-300"
+                      : "text-muted-foreground"
                   }`}
                 />
               </motion.button>
@@ -147,7 +147,7 @@ export default function ReviewSection({ productId }: ReviewSectionProps) {
       {loading ? (
         <div className="space-y-4">
           {[1, 2].map((i) => (
-            <div key={i} className="h-24 rounded-lg bg-gray-100 animate-pulse" />
+            <div key={i} className="h-24 rounded-lg bg-luxury-gray animate-pulse" />
           ))}
         </div>
       ) : reviews.length > 0 ? (

@@ -28,7 +28,7 @@ export function BackToTop() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          whileHover={{ scale: 1.1, boxShadow: "0 8px 25px rgba(212,175,55,0.3)" }}
+          whileHover={{ scale: 1.1, boxShadow: "0 8px 25px rgba(201,163,78,0.3)" }}
           whileTap={{ scale: 0.9 }}
           className="fixed bottom-6 left-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-gold text-luxury-black shadow-lg"
           aria-label="Back to top"

@@ -68,7 +68,7 @@ export default function FeaturedCategories() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-80 rounded-lg bg-gray-200 animate-pulse" />
+              <div key={i} className="h-80 rounded-lg bg-luxury-gray animate-pulse" />
             ))}
           </div>
         ) : error ? (
@@ -104,7 +104,7 @@ export default function FeaturedCategories() {
                     <div className="absolute inset-0 border-0 transition-all duration-300 group-hover:border-2 group-hover:border-gold rounded-lg" />
                     <CardContent className="relative h-full flex flex-col justify-end p-6">
                       <h3 className="text-xl font-serif font-bold text-white mb-2">{category.name}</h3>
-                      <p className="text-sm text-gray-200 mb-4 line-clamp-2">{category.description}</p>
+                      <p className="text-sm text-white/60 mb-4 line-clamp-2">{category.description}</p>
                       <span className="text-gold text-sm font-semibold inline-flex items-center gap-1 group-hover:gap-2 transition-all">
                         Shop Now &rarr;
                       </span>
