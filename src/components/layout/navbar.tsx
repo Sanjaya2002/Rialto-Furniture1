@@ -9,6 +9,7 @@ import { NAV_LINKS, SITE_CONFIG } from "@/lib/constants";
 import { useCart } from "@/providers/cart-provider";
 import { useScrollDirection } from "@/hooks/use-scroll-direction";
 import { navLinkUnderline, staggerContainer, staggerItemFast } from "@/lib/animations";
+import Image from "next/image";
 
 const MotionLink = motion.create(Link);
 
@@ -33,15 +34,15 @@ export function Navbar() {
           animate={{ height: isScrolled ? "4rem" : "5rem" }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <Link href="/" className="flex items-center gap-2">
-            <motion.span
-              className="text-2xl font-serif font-bold gold-text"
-              animate={{ fontSize: isScrolled ? "1.3rem" : "1.5rem" }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-            >
-              Rialto
-            </motion.span>
-            <span className="text-sm text-white/60 hidden sm:block">Furniture</span>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/image_123650291 (4).JPG"   // Replace with your actual file name
+              alt="Rialto Furniture Logo"
+              width={180}
+              height={60}
+              priority
+              className="object-contain transition-all duration-300"
+            />
           </Link>
 
           <div className="hidden lg:flex items-center gap-8">
