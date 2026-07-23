@@ -35,14 +35,25 @@ export function Navbar() {
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
           <Link href="/" className="flex items-center">
-            <Image
-              src="/image_123650291 (4).JPG"   // Replace with your actual file name
-              alt="Rialto Furniture Logo"
-              width={180}
-              height={60}
-              priority
-              className="object-contain transition-all duration-300"
-            />
+            <motion.div
+              animate={{
+                width: isScrolled ? 145 : 180,
+                height: isScrolled ? 48 : 60,
+              }}
+              transition={{
+                duration: 0.3,
+                ease: "easeOut",
+              }}
+              className="relative"
+            >
+              <Image
+                src="/image_123650291 (4).JPG"
+                alt="Rialto Furniture Logo"
+                fill
+                priority
+                className="object-contain"
+              />
+            </motion.div>
           </Link>
 
           <div className="hidden lg:flex items-center gap-8">
