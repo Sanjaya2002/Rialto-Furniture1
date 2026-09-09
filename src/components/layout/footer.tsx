@@ -1,7 +1,11 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Phone, Mail, MapPin, Music2 } from "lucide-react";
 import { SITE_CONFIG, SOCIAL_LINKS, FOOTER_LINKS } from "@/lib/constants";
+import { RialtoBrand } from "@/components/ui/rialto-brand";
 import { staggerContainer, staggerItemFast, fadeUp } from "@/lib/animations";
 
 function FacebookIcon({ className }: { className?: string }) {
@@ -35,6 +39,26 @@ function LinkedInIcon({ className }: { className?: string }) {
 const MotionLink = motion.create(Link);
 
 export function Footer() {
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
   return (
     <motion.footer
       className="bg-luxury-black text-white/80"
@@ -48,7 +72,7 @@ export function Footer() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12"
         >
           <motion.div variants={staggerItemFast}>
-            <h3 className="text-2xl font-serif font-bold gold-text mb-4">Rialto Furniture</h3>
+            <h3 className="text-2xl font-serif font-bold mb-4"> Rialto Furniture</h3>
             <p className="text-sm text-white/60 leading-relaxed mb-6">
               {SITE_CONFIG.tagline}. Premium furniture for offices, businesses, and commercial spaces across Sri Lanka.
             </p>
@@ -95,17 +119,20 @@ export function Footer() {
           </motion.div>
 
           <motion.div variants={staggerItemFast}>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">Categories</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-white mb-4">
+              Categories
+            </h4>
+
             <ul className="space-y-3">
-              {FOOTER_LINKS.categories.map((link) => (
-                <li key={link.href}>
+              {categories.map((category) => (
+                <li key={category.id}>
                   <MotionLink
-                    href={link.href}
+                    href={`/shop?category=${category.slug}`}
                     className="text-sm text-white/60 hover:text-gold transition-colors inline-block"
                     whileHover={{ x: 4, color: "#C9A34E" }}
                     transition={{ duration: 0.2 }}
                   >
-                    {link.label}
+                    {category.name}
                   </MotionLink>
                 </li>
               ))}

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Award, Truck, Paintbrush, ShieldCheck } from "lucide-react";
 import { WHY_CHOOSE_US } from "@/lib/constants";
+import { RialtoBrand } from "@/components/ui/rialto-brand";
 
 const iconMap: Record<string, React.ElementType> = {
   Award,
@@ -29,7 +30,7 @@ export default function WhyChooseUs() {
     <section className="py-20 px-4 bg-luxury-gray">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="section-heading">Why Choose Rialto?</h2>
+          <h2 className="section-heading">Why Choose <RialtoBrand />?</h2>
           <p className="section-subheading">
             We are committed to delivering excellence in every piece we create
           </p>

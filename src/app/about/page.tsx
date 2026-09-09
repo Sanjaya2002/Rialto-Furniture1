@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SITE_CONFIG, WHY_CHOOSE_US } from "@/lib/constants";
+import { RialtoBrand } from "@/components/ui/rialto-brand";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -16,7 +17,7 @@ export default function AboutPage() {
       <section className="bg-luxury-gray py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-luxury-black">
-            About <span className="text-gold">Rialto Furniture</span>
+            About <RialtoBrand /> Furniture
           </h1>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
             Crafting premium furniture solutions for Sri Lanka with timeless elegance and uncompromising quality.
@@ -31,7 +32,7 @@ export default function AboutPage() {
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-luxury-black">Our Story</h2>
               <div className="w-16 h-1 bg-gold mt-4 mb-6" />
               <p className="text-muted-foreground leading-relaxed mb-4">
-                Rialto Furniture was born from a vision to transform spaces across Sri Lanka with furniture that
+                <RialtoBrand /> Furniture was born from a vision to transform spaces across Sri Lanka with furniture that
                 marries timeless design with uncompromising quality. What began as a small workshop has grown into
                 a trusted name for premium office, commercial, and educational furniture.
               </p>
@@ -77,7 +78,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-luxury-black">
-              Why Choose Rialto Furniture
+              Why Choose <RialtoBrand /> Furniture
             </h2>
             <div className="w-16 h-1 bg-gold mx-auto mt-4" />
           </div>

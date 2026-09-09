@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { getSupabaseClient } from "@/lib/supabase"
+import { RialtoBrand } from "@/components/ui/rialto-brand"
 import { LayoutDashboard, Package, FolderOpen, ShoppingCart, Star, ClipboardList, LogOut } from "lucide-react"
 
 const navItems = [
@@ -32,7 +33,7 @@ export function AdminSidebar() {
           <div className="flex h-8 w-8 items-center justify-center rounded bg-gold text-xs font-bold text-black">
             RF
           </div>
-          <span className="font-serif text-lg font-semibold text-white">Rialto</span>
+          <span className="font-serif text-lg font-semibold text-white"><RialtoBrand /></span>
         </Link>
       </div>
       <nav className="flex-1 space-y-1 px-3 py-4">

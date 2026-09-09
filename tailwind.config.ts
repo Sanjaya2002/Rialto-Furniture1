@@ -10,6 +10,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        "brand-orange": "#f05a28",
+        "brand-navy": "#02437b",
         primary: {
           DEFAULT: "#18344A",
           foreground: "#F8F7F4",
