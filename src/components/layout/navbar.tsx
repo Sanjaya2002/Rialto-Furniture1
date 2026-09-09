@@ -38,7 +38,7 @@ export function Navbar() {
             <motion.div
               animate={{
                 width: isScrolled ? 145 : 180,
-                height: isScrolled ? 48 : 60,
+                height: isScrolled ? 64 : 80,
               }}
               transition={{
                 duration: 0.3,

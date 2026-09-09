@@ -42,7 +42,7 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="bg-luxury-gray rounded-lg h-80 flex items-center justify-center">
-              <img src="\image_123650291 (4).JPG" className="h-80" />
+              <img src="\image_123650291 (4).JPG" className="h-full w-full" />
             </div>
           </div>
         </div>
