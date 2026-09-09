@@ -41,7 +41,7 @@ export default function AboutPage() {
                 and customer satisfaction.
               </p>
             </div>
-            <div className="bg-luxury-gray rounded-lg h-64 sm:h-80 md:h-96 lg:h-[500px] overflow-hidden">
+            <div className="bg-luxury-gray rounded-lg overflow-hidden w-full">
               <img src="\image_123650291 (4).JPG" className="h-full w-full object-cover" />
             </div>
           </div>
