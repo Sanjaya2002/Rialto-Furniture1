@@ -1,20 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
-  const supabase = getSupabaseClient();
+  let body: { email?: string; password?: string };
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  }
 
+  const email = body.email?.toString().trim() ?? "";
+  const password = body.password ?? "";
+
+  if (!email || !password) {
+    return NextResponse.json(
+      { error: "Email and password are required" },
+      { status: 400 }
+    );
+  }
+
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase.auth.signInWithPassword({
-    email: body.email,
-    password: body.password,
+    email,
+    password,
   });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }
 
-  return NextResponse.json({ session: data.session, user: data.user });
+  return NextResponse.json({ user: data.user });
 }
 
 export async function GET(request: NextRequest) {

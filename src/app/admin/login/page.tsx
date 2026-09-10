@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { getSupabaseClient } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,48 +14,33 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const [checkingSession, setCheckingSession] = useState(true)
-
-  useEffect(() => {
-    const supabase = getSupabaseClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        router.replace("/admin/dashboard")
-      } else {
-        setCheckingSession(false)
-      }
-    }).catch(() => {
-      setCheckingSession(false);
-    })
-  }, [router])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError("")
     setLoading(true)
 
-    const supabase = getSupabaseClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    try {
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
 
-    setLoading(false)
+      const data = await res.json()
 
-    if (signInError) {
-      setError(signInError.message)
-      return
+      if (!res.ok) {
+        setError(data.error || "Invalid email or password")
+        setLoading(false)
+        return
+      }
+
+      router.push("/admin/dashboard")
+      router.refresh()
+    } catch {
+      setError("An unexpected error occurred")
+      setLoading(false)
     }
-
-    router.push("/admin/dashboard")
-  }
-
-  if (checkingSession) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#18344A]">
-        <Loader2 className="h-6 w-6 animate-spin text-gold" />
-      </div>
-    )
   }
 
   return (

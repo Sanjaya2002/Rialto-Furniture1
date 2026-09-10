@@ -1,31 +1,30 @@
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
 model Product {
-  id             String   @id @default(cuid())
+  id             String                 @id @default(cuid())
   name           String
-  slug           String   @unique
+  slug           String                 @unique
   description    String
   price          Float
   categoryId     String
-  category       Category @relation(fields: [categoryId], references: [id])
-  images         String[]
-  stock          Int      @default(0)
-  featured       Boolean  @default(false)
+  stock          Int                    @default(0)
+  featured       Boolean                @default(false)
   specifications Json?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  reviews     Review[]
-  orderItems  OrderItem[]
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  images         String[]
+  orderItems     OrderItem[]
+  category       Category               @relation(fields: [categoryId], references: [id])
   quotationItems QuotationRequestItem[]
+  reviews        Review[]
 }
 
 model Category {
@@ -34,43 +33,41 @@ model Category {
   slug        String    @unique
   description String?
   image       String?
-
-  products   Product[]
+  products    Product[]
 }
 
 model Review {
   id        String   @id @default(cuid())
   productId String
-  product   Product  @relation(fields: [productId], references: [id])
   name      String
   rating    Int
   comment   String
   createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id])
 }
 
 model Order {
-  id            String   @id @default(cuid())
+  id            String      @id @default(cuid())
   customerName  String
   customerEmail String
   customerPhone String
   address       String
   totalAmount   Float
-  status        String   @default("Pending")
+  status        String      @default("Pending")
   paymentMethod String?
-  paymentStatus String   @default("Pending")
-  createdAt     DateTime @default(now())
-
-  items OrderItem[]
+  paymentStatus String      @default("Pending")
+  createdAt     DateTime    @default(now())
+  items         OrderItem[]
 }
 
 model OrderItem {
   id        String  @id @default(cuid())
   orderId   String
-  order     Order   @relation(fields: [orderId], references: [id])
   productId String
-  product   Product @relation(fields: [productId], references: [id])
   quantity  Int
   price     Float
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model CustomOrderRequest {
@@ -87,14 +84,14 @@ model CustomOrderRequest {
 }
 
 model User {
-  id            String    @id
+  id            String             @id
   name          String?
-  email         String?   @unique
+  email         String?            @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
-  sessions      Session[]
   quotations    QuotationRequest[]
+  sessions      Session[]
 }
 
 model Account {
@@ -132,29 +129,29 @@ model VerificationToken {
 }
 
 model QuotationRequest {
-  id            String   @id @default(cuid())
-  reference     String   @unique
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-  status        String   @default("Pending")
-  notes         String?
-  customerName  String
-  customerEmail String
-  customerPhone String
-  address       String?
-  idempotencyKey String  @unique
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  items         QuotationRequestItem[]
+  id             String                 @id @default(cuid())
+  reference      String                 @unique
+  userId         String
+  status         String                 @default("Pending")
+  notes          String?
+  customerName   String
+  customerEmail  String
+  customerPhone  String
+  address        String?
+  idempotencyKey String                 @unique
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  user           User                   @relation(fields: [userId], references: [id])
+  items          QuotationRequestItem[]
 }
 
 model QuotationRequestItem {
   id                  String           @id @default(cuid())
   quotationRequestId  String
-  quotationRequest    QuotationRequest @relation(fields: [quotationRequestId], references: [id], onDelete: Cascade)
   productId           String
-  product             Product          @relation(fields: [productId], references: [id])
   productNameSnapshot String
   quantity            Int
   priceSnapshot       Float
+  product             Product          @relation(fields: [productId], references: [id])
+  quotationRequest    QuotationRequest @relation(fields: [quotationRequestId], references: [id], onDelete: Cascade)
 }

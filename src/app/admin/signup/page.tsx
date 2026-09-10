@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { getSupabaseClient } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,20 +16,6 @@ export default function AdminSignupPage() {
   const [adminSecretKey, setAdminSecretKey] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const [checkingSession, setCheckingSession] = useState(true)
-
-  useEffect(() => {
-    const supabase = getSupabaseClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        router.replace("/admin/dashboard")
-      } else {
-        setCheckingSession(false)
-      }
-    }).catch(() => {
-      setCheckingSession(false);
-    })
-  }, [router])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -64,18 +49,11 @@ export default function AdminSignupPage() {
       }
 
       router.push("/admin/dashboard")
+      router.refresh()
     } catch {
       setError("An unexpected error occurred")
       setLoading(false)
     }
-  }
-
-  if (checkingSession) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#18344A]">
-        <Loader2 className="h-6 w-6 animate-spin text-gold" />
-      </div>
-    )
   }
 
   return (

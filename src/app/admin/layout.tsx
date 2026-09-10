@@ -1,43 +1,23 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
-import { getSupabaseClient } from "@/lib/supabase"
+import { headers } from "next/headers"
+import { redirect } from "next/navigation"
+import { createServerSupabaseClient } from "@/lib/supabase-server"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
-import { Loader2 } from "lucide-react"
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [checking, setChecking] = useState(true)
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const headerStore = await headers()
+  const pathname = headerStore.get("x-pathname") ?? ""
 
-  useEffect(() => {
-    const supabase = getSupabaseClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setIsAuthenticated(true)
-      } else {
-        router.replace("/admin/login")
-      }
-      setChecking(false)
-    })
-  }, [router])
+  const isAuthPage = pathname === "/admin/login" || pathname === "/admin/signup"
 
-  if (pathname === "/admin/login" || pathname === "/admin/signup") {
+  if (isAuthPage || !pathname) {
     return <>{children}</>
   }
 
-  if (checking) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#18344A]">
-        <Loader2 className="h-6 w-6 animate-spin text-gold" />
-      </div>
-    )
-  }
+  const supabase = await createServerSupabaseClient()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  if (!isAuthenticated) {
-    return null
+  if (!user) {
+    redirect("/admin/login")
   }
 
   return (

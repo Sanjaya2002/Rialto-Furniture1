@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { getSupabaseClient } from "@/lib/supabase"
 import { RialtoBrand } from "@/components/ui/rialto-brand"
 import { LayoutDashboard, Package, FolderOpen, ShoppingCart, Star, ClipboardList, FileText, LogOut } from "lucide-react"
 
@@ -22,9 +21,9 @@ export function AdminSidebar() {
   const router = useRouter()
 
   async function handleLogout() {
-    const supabase = getSupabaseClient()
-    await supabase.auth.signOut()
+    await fetch("/api/auth/logout", { method: "POST" })
     router.push("/admin/login")
+    router.refresh()
   }
 
   return (
