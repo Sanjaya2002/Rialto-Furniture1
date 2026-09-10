@@ -6,11 +6,12 @@ export async function GET(request: NextRequest) {
   try {
     const auth = await requireAdmin(request);
     if (auth) return auth;
-    const [totalOrders, totalProducts, totalCategories, orders, recentOrders] =
+    const [totalOrders, totalProducts, totalCategories, totalQuotations, orders, recentOrders] =
       await Promise.all([
         prisma.order.count(),
         prisma.product.count(),
         prisma.category.count(),
+        prisma.quotationRequest.count(),
         prisma.order.findMany({
           where: { status: "Completed" },
           select: { totalAmount: true },
@@ -34,6 +35,7 @@ export async function GET(request: NextRequest) {
       totalOrders,
       totalProducts,
       totalCategories,
+      totalQuotations,
       totalRevenue,
       recentOrders,
     });

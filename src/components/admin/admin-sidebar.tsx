@@ -5,13 +5,14 @@ import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { getSupabaseClient } from "@/lib/supabase"
 import { RialtoBrand } from "@/components/ui/rialto-brand"
-import { LayoutDashboard, Package, FolderOpen, ShoppingCart, Star, ClipboardList, LogOut } from "lucide-react"
+import { LayoutDashboard, Package, FolderOpen, ShoppingCart, Star, ClipboardList, FileText, LogOut } from "lucide-react"
 
 const navItems = [
   { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Categories", href: "/admin/categories", icon: FolderOpen },
   { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  { label: "Quotations", href: "/admin/quotations", icon: FileText },
   { label: "Reviews", href: "/admin/reviews", icon: Star },
   { label: "Custom Orders", href: "/admin/custom-orders", icon: ClipboardList },
 ]

@@ -74,6 +74,10 @@ export const ORDER_STATUSES = ["Pending", "Processing", "Completed", "Cancelled"
 
 export const CUSTOM_ORDER_STATUSES = ["Pending", "In Review", "Approved", "Rejected"] as const;
 
+export const QUOTATION_STATUSES = ["Pending", "Processing", "Approved", "Rejected"] as const;
+
+export const PAYMENTS_ENABLED = process.env.NEXT_PUBLIC_ENABLE_PAYMENTS === "true";
+
 export const PAYMENT_METHODS = [
   { id: "payhere", label: "PayHere", description: "Pay via credit card, debit card, or online banking" },
   { id: "koko", label: "KOKO Payment", description: "Pay using KOKO payment system" },

@@ -1,5 +1,24 @@
 import { NextResponse } from "next/server";
+import type { User } from "@supabase/supabase-js";
 import { getSupabaseClient } from "./supabase";
+
+export async function getCurrentUser(request: Request): Promise<User | null> {
+  const authHeader = request.headers.get("Authorization");
+  const token = authHeader?.replace("Bearer ", "");
+
+  if (!token) {
+    return null;
+  }
+
+  const supabase = getSupabaseClient();
+  const { data, error } = await supabase.auth.getUser(token);
+
+  if (error || !data.user) {
+    return null;
+  }
+
+  return data.user;
+}
 
 export async function requireAdmin(request: Request) {
   const authHeader = request.headers.get("Authorization");

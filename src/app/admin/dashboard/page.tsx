@@ -7,12 +7,13 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatPrice, formatDate } from "@/lib/utils"
 import { adminFetch } from "@/lib/admin-fetch"
-import { Package, FolderOpen, ShoppingCart, DollarSign } from "lucide-react"
+import { Package, FolderOpen, ShoppingCart, FileText, DollarSign } from "lucide-react"
 
 interface DashboardStats {
   totalOrders: number
   totalProducts: number
   totalCategories: number
+  totalQuotations: number
   totalRevenue: number
   recentOrders: {
     id: string
@@ -56,6 +57,12 @@ export default function AdminDashboardPage() {
           icon={Package}
           label="Total Products"
           value={stats?.totalProducts ?? 0}
+          loading={loading}
+        />
+        <StatCard
+          icon={FileText}
+          label="Total Quotations"
+          value={stats?.totalQuotations ?? 0}
           loading={loading}
         />
         <StatCard

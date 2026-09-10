@@ -35,6 +35,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (process.env.ENABLE_PAYMENTS !== "true") {
+      return NextResponse.json(
+        { error: "Online ordering is currently disabled." },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json();
 
     const itemsData = body.items as { productId: string; quantity: number }[];
