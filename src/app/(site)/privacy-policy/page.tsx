@@ -95,7 +95,7 @@ export default function PrivacyPolicyPage() {
         </p>
         <ul>
           <li>Email: {SITE_CONFIG.email}</li>
-          <li>Phone: {SITE_CONFIG.phone}</li>
+          <li>Phone: {SITE_CONFIG.phones.join(" / ")}</li>
           <li>Address: {SITE_CONFIG.address}</li>
         </ul>
       </LegalSection>

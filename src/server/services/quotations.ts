@@ -1,5 +1,6 @@
 import "server-only";
 import { randomInt, randomUUID } from "node:crypto";
+import { after } from "next/server";
 import type { User } from "@supabase/supabase-js";
 import { db } from "../db";
 import { HttpError, notFound } from "../http";
@@ -37,20 +38,23 @@ async function upsertCustomer(user: User & { email: string }) {
   const name = typeof meta.full_name === "string" ? meta.full_name : user.email;
   const image = typeof meta.avatar_url === "string" ? meta.avatar_url : null;
 
-  return db.user.upsert({
-    where: { email: user.email },
-    update: { name, image },
-    create: { id: user.id, email: user.email, name, image },
+  const existing = await db.user.findFirst({
+    where: { OR: [{ id: user.id }, { email: user.email }] },
+    select: { id: true },
   });
+  if (existing) return db.user.update({ where: { id: existing.id }, data: { name, image } });
+  return db.user.create({ data: { id: user.id, email: user.email, name, image } });
 }
 
+/**
+ * Creates a quotation request. `user` is the signed-in Google customer, or null for a guest
+ * (contact details then come only from the form).
+ */
 export async function createQuotation(
-  user: User,
+  user: User | null,
   input: QuotationInput,
   headerIdempotencyKey?: string | null,
 ): Promise<{ reference: string; alreadySubmitted: boolean }> {
-  if (!user.email) throw new HttpError(401, "You must be signed in to request a quotation.");
-
   const idempotencyKey = input.idempotencyKey || headerIdempotencyKey || randomUUID();
 
   const existing = await db.quotationRequest.findUnique({
@@ -70,14 +74,14 @@ export async function createQuotation(
   }
   const productById = new Map(products.map((p) => [p.id, p]));
 
-  const customer = await upsertCustomer(user as User & { email: string });
+  const customer = user?.email ? await upsertCustomer(user as User & { email: string }) : null;
   const reference = await uniqueReference();
 
   const quotation = await db.quotationRequest.create({
     data: {
       reference,
       idempotencyKey,
-      userId: customer.id,
+      userId: customer?.id ?? null,
       status: "Pending",
       notes: input.notes ?? null,
       customerName: input.customerName,
@@ -99,14 +103,17 @@ export async function createQuotation(
     include: { items: true },
   });
 
-  // Fire-and-forget: the quotation is saved even if the notification fails.
-  void sendQuotationNotification({
-    reference: quotation.reference,
-    customerName: quotation.customerName,
-    customerPhone: quotation.customerPhone,
-    totalItems: quotation.items.reduce((sum, i) => sum + i.quantity, 0),
-    totalAmount: quotation.items.reduce((sum, i) => sum + i.priceSnapshot * i.quantity, 0),
-  });
+  // Runs after the response is sent (and is kept alive on serverless hosts).
+  // The quotation is saved even if the notification fails.
+  after(() =>
+    sendQuotationNotification({
+      reference: quotation.reference,
+      customerName: quotation.customerName,
+      customerPhone: quotation.customerPhone,
+      totalItems: quotation.items.reduce((sum, i) => sum + i.quantity, 0),
+      totalAmount: quotation.items.reduce((sum, i) => sum + i.priceSnapshot * i.quantity, 0),
+    }),
+  );
 
   return { reference: quotation.reference, alreadySubmitted: false };
 }

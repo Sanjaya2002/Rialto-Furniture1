@@ -15,6 +15,23 @@ export function validateAttachment(file: File) {
   if (!ALLOWED_TYPES.has(file.type)) throw new HttpError(400, "Attachment must be an image or a PDF.");
 }
 
+let bucketReady = false;
+
+/** Creates the private attachments bucket on first use. */
+async function ensureAttachmentBucket() {
+  if (bucketReady) return;
+  const storage = createAdminSupabaseClient().storage;
+  const { data } = await storage.getBucket(ATTACHMENT_BUCKET);
+  if (!data) {
+    const { error } = await storage.createBucket(ATTACHMENT_BUCKET, {
+      public: false,
+      fileSizeLimit: MAX_ATTACHMENT_BYTES,
+    });
+    if (error && !/already exists/i.test(error.message)) throw error;
+  }
+  bucketReady = true;
+}
+
 /**
  * Uploads to Supabase Storage. Returns the stored path, or null when storage
  * is unavailable — the request itself is still saved so no lead is lost.
@@ -28,6 +45,7 @@ async function uploadAttachment(file: File): Promise<string | null> {
         ?.toLowerCase()
         .replace(/[^a-z0-9]/g, "") || "bin";
     const path = `${new Date().toISOString().slice(0, 10)}/${randomUUID()}.${extension}`;
+    await ensureAttachmentBucket();
     const { error } = await createAdminSupabaseClient()
       .storage.from(ATTACHMENT_BUCKET)
       .upload(path, file, { contentType: file.type, upsert: false });

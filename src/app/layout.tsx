@@ -1,18 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Geist } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import { SITE_CONFIG } from "@/lib/constants";
 import "./globals.css";
 
-const display = Fraunces({
+/** Headings: geometric, confident and easy to spot. */
+const display = Plus_Jakarta_Sans({
   subsets: ["latin"],
   style: ["normal", "italic"],
-  axes: ["opsz", "SOFT"],
   variable: "--font-display",
   display: "swap",
 });
 
-const sans = Geist({
+/** Body copy and UI: highly legible at small sizes. */
+const sans = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",

@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { ImageUploader } from "@/components/admin/image-uploader";
+import { apiRequest, errorMessage, jsonBody } from "@/lib/api-client";
 import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 
 interface Category {
@@ -76,36 +78,30 @@ export default function AdminCategoriesPage() {
   }
 
   async function handleSave() {
+    if (!form.name.trim()) {
+      toast.error("Name is required.");
+      return;
+    }
     setSaving(true);
     try {
       const body = {
-        name: form.name,
-        description: form.description || undefined,
-        image: form.image || undefined,
+        name: form.name.trim(),
+        description: form.description.trim() || undefined,
+        image: form.image || null,
       };
 
       if (editingCategory) {
-        const res = await fetch(`/api/categories/${editingCategory.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-        if (!res.ok) throw new Error("Failed to update category");
+        await apiRequest(`/api/categories/${editingCategory.id}`, jsonBody(body, "PUT"));
         toast.success("Category updated");
       } else {
-        const res = await fetch("/api/categories", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-        if (!res.ok) throw new Error("Failed to create category");
+        await apiRequest("/api/categories", jsonBody(body));
         toast.success("Category created");
       }
 
       setDialogOpen(false);
       fetchCategories();
-    } catch {
-      toast.error("Failed to save category");
+    } catch (error) {
+      toast.error(errorMessage(error, "Failed to save category"));
     } finally {
       setSaving(false);
     }
@@ -114,16 +110,13 @@ export default function AdminCategoriesPage() {
   async function handleDelete() {
     if (!deletingCategory) return;
     try {
-      const res = await fetch(`/api/categories/${deletingCategory.id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error("Failed to delete category");
+      await apiRequest(`/api/categories/${deletingCategory.id}`, { method: "DELETE" });
       toast.success("Category deleted");
       setDeleteOpen(false);
       setDeletingCategory(null);
       fetchCategories();
-    } catch {
-      toast.error("Failed to delete category");
+    } catch (error) {
+      toast.error(errorMessage(error, "Failed to delete category"));
     }
   }
 
@@ -231,12 +224,12 @@ export default function AdminCategoriesPage() {
               />
             </div>
             <div className="grid gap-2">
-              <Label className="text-ink-soft">Image URL</Label>
-              <Input
-                value={form.image}
-                onChange={(e) => setForm({ ...form, image: e.target.value })}
-                placeholder="https://example.com/image.jpg"
-                className="border-border bg-card text-ink placeholder:text-ink-muted/60"
+              <Label className="text-ink-soft">Cover image</Label>
+              <ImageUploader
+                max={1}
+                folder="categories"
+                value={form.image ? [form.image] : []}
+                onChange={(urls) => setForm((f) => ({ ...f, image: urls[0] ?? "" }))}
               />
             </div>
           </div>
@@ -273,7 +266,7 @@ export default function AdminCategoriesPage() {
             <Button
               variant="destructive"
               onClick={handleDelete}
-              className="bg-red-600 text-ink hover:bg-red-700"
+              className="bg-red-600 text-white hover:bg-red-700"
             >
               Delete
             </Button>

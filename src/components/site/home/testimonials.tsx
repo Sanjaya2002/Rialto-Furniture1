@@ -26,7 +26,7 @@ export function Testimonials({ reviews }: { reviews: Testimonial[] }) {
     <section className="bg-bone py-24 md:py-36" aria-roledescription="carousel" aria-label="Customer reviews">
       <div className="container grid gap-12 lg:grid-cols-12">
         <div className="flex flex-col justify-between gap-8 lg:col-span-3">
-          <p className="eyebrow">06 — In their words</p>
+          <p className="eyebrow">07 — In their words</p>
           {reviews.length > 1 && (
             <div className="flex items-center gap-4">
               <button

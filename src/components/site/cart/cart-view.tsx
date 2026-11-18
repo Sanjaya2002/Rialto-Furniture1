@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/providers/cart-provider";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, formatProductPrice, hasPrice } from "@/lib/utils";
 import { IMAGERY } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -65,7 +65,8 @@ export function CartView() {
                       <div className="hidden min-w-0 md:block">
                         <ItemName name={item.name} slug={item.slug} />
                         <p className="mt-1 text-sm tabular-nums text-ink-muted">
-                          {formatPrice(item.price)} each
+                          {formatProductPrice(item.price)}
+                          {hasPrice(item.price) && " each"}
                         </p>
                         <RemoveButton onClick={() => removeItem(item.id)} />
                       </div>
@@ -74,7 +75,8 @@ export function CartView() {
                     <div className="min-w-0 md:hidden">
                       <ItemName name={item.name} slug={item.slug} />
                       <p className="mt-1 text-sm tabular-nums text-ink-muted">
-                        {formatPrice(item.price)} each
+                        {formatProductPrice(item.price)}
+                        {hasPrice(item.price) && " each"}
                       </p>
                       <div className="mt-4 flex items-center justify-between">
                         <QuantityStepper
@@ -82,7 +84,7 @@ export function CartView() {
                           value={item.quantity}
                           onChange={(q) => updateQuantity(item.id, q)}
                         />
-                        <p className="tabular-nums">{formatPrice(item.price * item.quantity)}</p>
+                        <p className="tabular-nums">{formatProductPrice(item.price * item.quantity)}</p>
                       </div>
                       <RemoveButton onClick={() => removeItem(item.id)} />
                     </div>
@@ -95,7 +97,7 @@ export function CartView() {
                       />
                     </div>
                     <p className="hidden text-right tabular-nums md:block">
-                      {formatPrice(item.price * item.quantity)}
+                      {formatProductPrice(item.price * item.quantity)}
                     </p>
                   </motion.li>
                 ))}
@@ -107,7 +109,7 @@ export function CartView() {
           </div>
 
           <aside className="lg:col-span-4">
-            <div className="bg-card p-6 md:p-8 lg:sticky lg:top-28">
+            <div className="bg-card p-6 md:p-8 lg:sticky lg:top-36">
               <h2 className="font-display text-2xl">Summary</h2>
               <dl className="mt-6 space-y-3 border-b pb-6 text-sm">
                 <div className="flex justify-between">

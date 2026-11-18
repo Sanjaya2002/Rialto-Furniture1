@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { handler, HttpError, parseJson, validate } from "@/server/http";
 import { requireAdmin } from "@/server/auth";
+import { rateLimit } from "@/server/rate-limit";
 import { createCustomOrder, listCustomOrders, validateAttachment } from "@/server/services/custom-orders";
 import { customOrderInput } from "@/server/validation";
 
@@ -11,6 +12,7 @@ export const GET = handler(async () => {
 
 /** Accepts multipart/form-data (with optional "file") or JSON. */
 export const POST = handler(async (request) => {
+  rateLimit(request, "custom-order", 6, 60 * 60 * 1000);
   const contentType = request.headers.get("content-type") ?? "";
 
   if (contentType.includes("multipart/form-data")) {

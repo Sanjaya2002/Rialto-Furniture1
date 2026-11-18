@@ -5,11 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { NAV_LINKS, SITE_CONFIG, whatsappLink } from "@/lib/constants";
+import { NAV_LINKS, SITE_CONFIG, SOLUTIONS, telHref, whatsappLink } from "@/lib/constants";
 import { useCart } from "@/providers/cart-provider";
 import { Logo } from "@/components/site/logo";
 import { setScrollLocked } from "@/components/motion/smooth-scroll";
 import { EASE_IN_OUT, EASE_OUT } from "@/components/motion/easing";
+import { SolutionBar } from "@/components/site/layout/solution-bar";
 
 /** Pages whose first section is full-bleed photography (nav starts light-on-dark). */
 const OVERLAY_ROUTES = new Set(["/", "/about"]);
@@ -99,7 +100,7 @@ export function Navbar() {
 
           <div className="flex items-center gap-6 justify-self-end text-[0.82rem]">
             <a
-              href={`tel:${SITE_CONFIG.phone.replace(/\s/g, "")}`}
+              href={telHref(SITE_CONFIG.phone)}
               className="link-underline hidden tabular-nums xl:inline-block"
             >
               {SITE_CONFIG.phone}
@@ -132,19 +133,23 @@ export function Navbar() {
             </button>
           </div>
         </div>
+        {!menuOpen && <SolutionBar overlay={overlay} />}
       </motion.header>
 
       <AnimatePresence>
         {menuOpen && (
           <motion.div
             id="mobile-menu"
-            className="fixed inset-0 z-30 flex flex-col bg-ink text-paper lg:hidden"
+            className="fixed inset-0 z-30 flex flex-col overflow-y-auto bg-ink text-paper lg:hidden"
             initial={{ clipPath: "inset(0% 0% 100% 0%)" }}
             animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
             exit={{ clipPath: "inset(0% 0% 100% 0%)" }}
             transition={{ duration: 0.8, ease: EASE_IN_OUT }}
           >
-            <nav aria-label="Mobile" className="container flex flex-1 flex-col justify-center gap-1 pt-20">
+            <nav
+              aria-label="Mobile"
+              className="container flex flex-1 flex-col justify-center gap-1 pb-6 pt-24"
+            >
               {[{ label: "Home", href: "/" }, ...NAV_LINKS].map((link, i) => (
                 <div key={link.href} className="overflow-hidden">
                   <motion.div
@@ -167,20 +172,39 @@ export function Navbar() {
               ))}
             </nav>
             <motion.div
-              className="pb-safe container grid grid-cols-2 gap-6 border-t border-paper/10 py-8 text-sm text-paper/70"
+              className="pb-safe container border-t border-paper/10 py-8 text-sm text-paper/70"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1, transition: { delay: 0.6 } }}
               exit={{ opacity: 0 }}
             >
-              <div>
-                <p className="mb-1 text-[0.7rem] uppercase tracking-[0.2em] text-paper/40">Call</p>
-                <a href={`tel:${SITE_CONFIG.phone.replace(/\s/g, "")}`}>{SITE_CONFIG.phone}</a>
-              </div>
-              <div>
-                <p className="mb-1 text-[0.7rem] uppercase tracking-[0.2em] text-paper/40">Chat</p>
-                <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
-                  WhatsApp
-                </a>
+              <p className="mb-3 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-paper/40">
+                Solutions
+              </p>
+              <ul className="mb-8 grid grid-cols-2 gap-x-6 gap-y-3">
+                {SOLUTIONS.map((item) => (
+                  <li key={item.productSlug}>
+                    <Link href={`/product/${item.productSlug}`} className="block">
+                      <span className="block font-semibold text-paper">{item.name}</span>
+                      <span className="text-xs text-paper/50">{item.segment}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <p className="mb-1 text-[0.7rem] uppercase tracking-[0.2em] text-paper/40">Call</p>
+                  {SITE_CONFIG.phones.map((phone) => (
+                    <a key={phone} href={telHref(phone)} className="block tabular-nums">
+                      {phone}
+                    </a>
+                  ))}
+                </div>
+                <div>
+                  <p className="mb-1 text-[0.7rem] uppercase tracking-[0.2em] text-paper/40">Chat</p>
+                  <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
+                    WhatsApp
+                  </a>
+                </div>
               </div>
             </motion.div>
           </motion.div>

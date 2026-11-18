@@ -4,16 +4,13 @@ import { createAnonSupabaseClient, createServerSupabaseClient } from "./supabase
 import { HttpError } from "./http";
 
 /**
- * Admins are Supabase users created through the protected admin signup
- * (email + password). Customers sign in with Google at checkout and must
- * never reach admin APIs, so a signed-in session alone is not enough.
+ * Admins carry app_metadata.role = "admin", which only the service role can set
+ * (the protected /admin/signup does this). A signed-in session alone is never enough:
+ * Supabase lets anyone with the public anon key create an email account.
+ * Promote an existing account with `npm run admin:promote -- you@example.com`.
  */
 export function isAdminUser(user: User | null | undefined): user is User {
-  if (!user) return false;
-  const meta = user.app_metadata ?? {};
-  if (meta.role === "admin") return true;
-  const providers: unknown = meta.providers;
-  return meta.provider === "email" && (!Array.isArray(providers) || providers.every((p) => p === "email"));
+  return user?.app_metadata?.role === "admin";
 }
 
 /** Current admin from the session cookie, or null. For Server Components. */
@@ -36,10 +33,14 @@ export async function requireAdmin(): Promise<User> {
   return user;
 }
 
-/** Customer identified by a Supabase access token in the Authorization header. */
+/** Customer identified by a Supabase access token in the Authorization header (optional sign-in). */
 export async function getBearerUser(request: Request): Promise<User | null> {
   const token = request.headers.get("Authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) return null;
-  const { data, error } = await createAnonSupabaseClient().auth.getUser(token);
-  return error ? null : data.user;
+  try {
+    const { data, error } = await createAnonSupabaseClient().auth.getUser(token);
+    return error ? null : data.user;
+  } catch {
+    return null;
+  }
 }

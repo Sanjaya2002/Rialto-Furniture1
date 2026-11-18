@@ -1,7 +1,7 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { db } from "../db";
-import { notFound } from "../http";
+import { HttpError, notFound } from "../http";
 import { generateSlug } from "@/lib/utils";
 import type { ProductInput, ProductUpdate } from "../validation";
 
@@ -114,7 +114,19 @@ export async function updateProduct(slug: string, input: ProductUpdate) {
 }
 
 export async function deleteProduct(slug: string) {
-  const existing = await db.product.findUnique({ where: { slug }, select: { id: true } });
+  const existing = await db.product.findUnique({
+    where: { slug },
+    select: { id: true, _count: { select: { quotationItems: true, orderItems: true } } },
+  });
   if (!existing) throw notFound("Product");
-  await db.product.delete({ where: { slug } });
+  if (existing._count.quotationItems > 0 || existing._count.orderItems > 0) {
+    throw new HttpError(
+      409,
+      "This product appears in quotation requests, so it can't be deleted (that would break those records). Set its stock to 0 or rename it instead.",
+    );
+  }
+  await db.$transaction([
+    db.review.deleteMany({ where: { productId: existing.id } }),
+    db.product.delete({ where: { id: existing.id } }),
+  ]);
 }

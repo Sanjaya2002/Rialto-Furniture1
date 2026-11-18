@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { IMAGERY, SITE_CONFIG } from "@/lib/constants";
+import { IMAGERY, SITE_CONFIG, mapsHref, telHref } from "@/lib/constants";
 import { SplitText } from "@/components/motion/split-text";
 import { ScrollText } from "@/components/motion/scroll-text";
 import { ParallaxImage } from "@/components/motion/parallax-image";
@@ -14,7 +14,24 @@ export const metadata: Metadata = {
   alternates: { canonical: "/about" },
 };
 
-const PRINCIPLES = [
+// TODO(client): confirm wording of vision, mission, strengths and values with Rialto.
+const VISION =
+  "To be Sri Lanka’s most trusted name in working furniture: known for quality, considered design and the standard of our care after the sale.";
+
+const MISSION =
+  "To furnish workplaces, institutions and commercial spaces with pieces that improve comfort and productivity, backed by service people can rely on.";
+
+const VALUES = [
+  { title: "Integrity", body: "Honest advice, transparent quotations and promises we keep." },
+  { title: "Customer first", body: "Every recommendation starts with how your space is really used." },
+  { title: "Excellence", body: "We hold every chair to the standard we would want in our own office." },
+  {
+    title: "Responsibility",
+    body: "Durable furniture, careful delivery and support that lasts beyond the sale.",
+  },
+];
+
+const STRENGTHS = [
   {
     title: "Premium quality",
     body: "Hand-picked materials and careful construction, so every piece meets the standard we would want in our own office.",
@@ -77,18 +94,12 @@ export default function AboutPage() {
         />
         <div className="flex flex-col justify-end gap-10 md:col-span-4 md:col-start-9">
           <Reveal>
-            <h2 className="mb-4 font-display text-3xl">Mission</h2>
-            <p className="leading-relaxed text-ink-muted">
-              To furnish workplaces, institutions and commercial spaces with pieces that improve comfort and
-              productivity — backed by service people can rely on.
-            </p>
+            <p className="eyebrow mb-4">Our vision</p>
+            <p className="font-display text-2xl font-semibold leading-snug">{VISION}</p>
           </Reveal>
           <Reveal delay={0.1}>
-            <h2 className="mb-4 font-display text-3xl">Vision</h2>
-            <p className="leading-relaxed text-ink-muted">
-              To be Sri Lanka’s most trusted name in working furniture: known for quality, considered design
-              and the standard of our care after the sale.
-            </p>
+            <p className="eyebrow mb-4">Our mission</p>
+            <p className="text-lg leading-relaxed text-ink-soft">{MISSION}</p>
           </Reveal>
         </div>
       </section>
@@ -96,10 +107,13 @@ export default function AboutPage() {
       <section className="bg-bone py-24 md:py-36">
         <div className="container">
           <div className="mb-16 grid gap-6 md:grid-cols-12 md:items-end">
-            <SplitText text={"What we *hold*\nourselves to"} className="text-display-lg md:col-span-8" />
+            <div className="md:col-span-8">
+              <p className="eyebrow mb-5">Core strengths</p>
+              <SplitText text={"What we do\n*best*"} className="text-display-lg" />
+            </div>
           </div>
           <RevealGroup className="grid border-t md:grid-cols-2">
-            {PRINCIPLES.map((p, i) => (
+            {STRENGTHS.map((p, i) => (
               <RevealItem
                 key={p.title}
                 className="grid grid-cols-[3rem_1fr] gap-4 border-b py-10 md:odd:border-r md:odd:pr-10 md:even:pl-10"
@@ -115,7 +129,25 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="container grid gap-12 py-24 md:grid-cols-12 md:py-36">
+      <section className="container py-24 md:py-36">
+        <div className="mb-14 grid gap-6 md:grid-cols-12 md:items-end">
+          <div className="md:col-span-8">
+            <p className="eyebrow mb-5">Our values</p>
+            <SplitText text={"What we *stand* for"} className="text-display-lg" />
+          </div>
+        </div>
+        <RevealGroup className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          {VALUES.map((value, i) => (
+            <RevealItem key={value.title} className="rounded-md border bg-card p-7">
+              <span className="text-xs font-semibold tabular-nums text-accent-deep">0{i + 1}</span>
+              <h3 className="mt-6 font-display text-2xl font-bold">{value.title}</h3>
+              <p className="mt-2 leading-relaxed text-ink-muted">{value.body}</p>
+            </RevealItem>
+          ))}
+        </RevealGroup>
+      </section>
+
+      <section className="container grid gap-12 border-t py-24 md:grid-cols-12 md:py-36">
         <div className="md:col-span-6">
           <SplitText text={"Visit the\n*showroom*"} className="text-display-lg" />
           <p className="mt-8 max-w-md leading-relaxed text-ink-muted">
@@ -134,15 +166,31 @@ export default function AboutPage() {
         <dl className="grid content-end gap-8 border-t pt-8 text-sm md:col-span-5 md:col-start-8">
           <div>
             <dt className="mb-1 text-[0.7rem] uppercase tracking-[0.2em] text-ink-muted">Address</dt>
-            <dd className="text-lg">{SITE_CONFIG.address}</dd>
+            <dd className="text-lg">
+              <a href={mapsHref} target="_blank" rel="noopener noreferrer" className="link-underline">
+                {SITE_CONFIG.address}
+              </a>
+            </dd>
           </div>
           <div>
             <dt className="mb-1 text-[0.7rem] uppercase tracking-[0.2em] text-ink-muted">Phone</dt>
-            <dd className="text-lg">
-              <a href={`tel:${SITE_CONFIG.phone.replace(/\s/g, "")}`} className="link-underline">
-                {SITE_CONFIG.phone}
-              </a>
-            </dd>
+            {SITE_CONFIG.phones.map((phone) => (
+              <dd key={phone} className="text-lg tabular-nums">
+                <a href={telHref(phone)} className="link-underline">
+                  {phone}
+                </a>
+              </dd>
+            ))}
+          </div>
+          <div>
+            <dt className="mb-1 text-[0.7rem] uppercase tracking-[0.2em] text-ink-muted">Email</dt>
+            {SITE_CONFIG.emails.map((email) => (
+              <dd key={email.address} className="text-lg">
+                <a href={`mailto:${email.address}`} className="link-underline">
+                  {email.address}
+                </a>
+              </dd>
+            ))}
           </div>
         </dl>
       </section>

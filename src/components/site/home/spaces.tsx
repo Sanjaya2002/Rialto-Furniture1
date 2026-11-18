@@ -49,7 +49,7 @@ export function Spaces({ categorySlugs }: { categorySlugs: string[] }) {
     <section className="overflow-hidden py-24 md:py-36">
       <div className="container">
         <div className="mb-14 max-w-3xl md:mb-20">
-          <p className="eyebrow mb-5">05 — Where it lives</p>
+          <p className="eyebrow mb-5">06 — Where it lives</p>
           <SplitText text={"Designed around\nhow rooms are *used*"} className="text-display-lg" />
         </div>
 

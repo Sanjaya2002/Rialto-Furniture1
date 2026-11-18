@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, MessageCircle, Truck, Wrench, FileText } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
-import { SITE_CONFIG, whatsappLink } from "@/lib/constants";
+import { Check, Truck, Wrench, FileText, ShieldCheck } from "lucide-react";
+import { formatPrice, formatProductPrice, hasPrice } from "@/lib/utils";
+import { productEnquiryLink } from "@/lib/constants";
+import { WhatsAppIcon } from "@/components/site/icons";
 import { useCart } from "@/providers/cart-provider";
 import { Button } from "@/components/ui/button";
 import { QuantityStepper } from "@/components/site/cart/quantity-stepper";
@@ -27,6 +28,7 @@ const ASSURANCES = [
   { icon: FileText, text: "Free, no-obligation quotation — no payment online" },
   { icon: Truck, text: "Delivery anywhere in Sri Lanka" },
   { icon: Wrench, text: "Assembly and setup by our team" },
+  { icon: ShieldCheck, text: "1-year+ warranty and after-sales support" },
 ];
 
 export function ProductPurchase({ product, rating }: ProductPurchaseProps) {
@@ -64,9 +66,8 @@ export function ProductPurchase({ product, rating }: ProductPurchaseProps) {
     setAdded(true);
   };
 
-  const enquiry = whatsappLink(
-    `Hi Rialto, I'm interested in "${product.name}" — ${SITE_CONFIG.url}/product/${product.slug}`,
-  );
+  const enquiry = productEnquiryLink(product.name, product.slug);
+  const priced = hasPrice(product.price);
 
   return (
     <div className="flex flex-col">
@@ -74,7 +75,7 @@ export function ProductPurchase({ product, rating }: ProductPurchaseProps) {
       <h1 className="text-display-md">{product.name}</h1>
 
       <div className="mt-6 flex flex-wrap items-baseline gap-x-5 gap-y-2">
-        <p className="font-display text-3xl tabular-nums">{formatPrice(product.price)}</p>
+        <p className="font-display text-3xl font-bold tabular-nums">{formatProductPrice(product.price)}</p>
         {rating && rating.count > 0 && (
           <a href="#reviews" className="text-sm text-ink-muted underline-offset-4 hover:underline">
             <span className="text-accent">★</span> {rating.average.toFixed(1)} · {rating.count} review
@@ -83,7 +84,9 @@ export function ProductPurchase({ product, rating }: ProductPurchaseProps) {
         )}
       </div>
       <p className="mt-1 text-xs text-ink-muted">
-        Guide price per unit. Volume pricing is confirmed in your quotation.
+        {priced
+          ? "Guide price per unit. Volume pricing is confirmed in your quotation."
+          : "Pricing depends on quantity and configuration. Ask us for a quotation."}
       </p>
 
       <p className="mt-8 whitespace-pre-line leading-relaxed text-ink-soft">{product.description}</p>
@@ -105,15 +108,19 @@ export function ProductPurchase({ product, rating }: ProductPurchaseProps) {
                   <Check /> Added to cart
                 </>
               ) : (
-                <>Add to cart — {formatPrice(product.price * quantity)}</>
+                <>Add to cart{priced && <> — {formatPrice(product.price * quantity)}</>}</>
               )}
             </motion.span>
           </AnimatePresence>
         </Button>
       </div>
-      <Button asChild variant="outline" size="lg" className="mt-3 h-12">
+      <Button
+        asChild
+        size="lg"
+        className="mt-3 h-12 bg-[#1DA851] text-white hover:bg-[#178a43] [&_svg]:size-5"
+      >
         <a href={enquiry} target="_blank" rel="noopener noreferrer">
-          <MessageCircle /> Ask about this on WhatsApp
+          <WhatsAppIcon /> Inquire on WhatsApp
         </a>
       </Button>
 
@@ -139,8 +146,17 @@ export function ProductPurchase({ product, rating }: ProductPurchaseProps) {
             <div className="pb-safe container flex items-center gap-3 py-3">
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">{product.name}</p>
-                <p className="text-xs tabular-nums text-ink-muted">{formatPrice(product.price)}</p>
+                <p className="text-xs tabular-nums text-ink-muted">{formatProductPrice(product.price)}</p>
               </div>
+              <Button
+                asChild
+                size="icon"
+                className="h-11 w-11 shrink-0 bg-[#1DA851] text-white hover:bg-[#178a43] [&_svg]:size-5"
+              >
+                <a href={enquiry} target="_blank" rel="noopener noreferrer" aria-label="Inquire on WhatsApp">
+                  <WhatsAppIcon />
+                </a>
+              </Button>
               <Button onClick={() => add(1)}>{added ? "Added" : "Add to cart"}</Button>
             </div>
           </motion.div>

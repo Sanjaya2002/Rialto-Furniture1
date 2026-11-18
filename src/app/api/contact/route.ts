@@ -1,13 +1,23 @@
 import { NextResponse } from "next/server";
 import { handler, parseJson } from "@/server/http";
+import { requireAdmin } from "@/server/auth";
+import { rateLimit } from "@/server/rate-limit";
+import { createContactMessage, listContactMessages } from "@/server/services/contact-messages";
 import { contactInput } from "@/server/validation";
 
-/**
- * Contact messages are validated and logged (visible in hosting logs).
- * There is no contact table in the schema; hook an email provider here if needed.
- */
+/** Admin: all contact-form messages, newest first. */
+export const GET = handler(async () => {
+  await requireAdmin();
+  return NextResponse.json(await listContactMessages());
+});
+
+/** Public: stores a contact-form message (shown in Admin → Messages). */
 export const POST = handler(async (request) => {
-  const message = await parseJson(request, contactInput);
-  console.info("[contact] New message", { ...message, receivedAt: new Date().toISOString() });
-  return NextResponse.json({ message: "Thank you for your message. We will get back to you soon." });
+  rateLimit(request, "contact", 5, 60 * 60 * 1000);
+  const input = await parseJson(request, contactInput);
+  await createContactMessage(input);
+  return NextResponse.json(
+    { message: "Thank you for your message. We will get back to you soon." },
+    { status: 201 },
+  );
 });

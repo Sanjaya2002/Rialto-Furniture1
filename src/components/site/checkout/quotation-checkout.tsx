@@ -7,7 +7,7 @@ import type { Session } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import { Check, Loader2 } from "lucide-react";
 import { getBrowserSupabase } from "@/lib/supabase-browser";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, formatProductPrice } from "@/lib/utils";
 import { IMAGERY } from "@/lib/constants";
 import { useCart } from "@/providers/cart-provider";
 import { Button } from "@/components/ui/button";
@@ -98,13 +98,20 @@ export function QuotationCheckout() {
       if (error) throw error;
     } catch {
       setRedirecting(false);
-      toast.error("Google sign-in failed. Please try again.");
+      toast.error("Google sign-in isn’t available right now. You can continue as a guest.");
+    }
+  }
+
+  async function signOut() {
+    try {
+      await getBrowserSupabase().auth.signOut();
+    } catch {
+      /* ignore */
     }
   }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!session) return signIn();
     if (items.length === 0) return;
 
     setSubmitting(true);
@@ -116,7 +123,7 @@ export function QuotationCheckout() {
         headers: {
           "Content-Type": "application/json",
           "Idempotency-Key": idempotencyKey.current,
-          Authorization: `Bearer ${session.access_token}`,
+          ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
         },
         body: JSON.stringify({
           customerName: form.name,
@@ -167,21 +174,34 @@ export function QuotationCheckout() {
 
       <form onSubmit={submit} className="mt-14 grid gap-12 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-7">
-          <Step n={1} title="Verify it’s you" done={signedIn}>
+          <Step n={1} title="Your details" done={signedIn}>
             {authStatus === "loading" ? (
               <Skeleton className="h-12 w-64" />
             ) : signedIn ? (
-              <p className="flex items-center gap-2 text-sm text-ink-soft">
+              <p className="flex flex-wrap items-center gap-2 text-sm text-ink-soft">
                 <Check className="h-4 w-4 text-success" />
                 Signed in as <span className="font-medium text-ink">{session?.user.email}</span>
+                <button
+                  type="button"
+                  onClick={signOut}
+                  className="text-ink-muted underline underline-offset-4 hover:text-ink"
+                >
+                  Sign out
+                </button>
               </p>
             ) : (
-              <div>
-                <p className="mb-5 max-w-md text-sm text-ink-muted">
-                  We ask you to sign in with Google so we can send your quotation securely. Your cart and
-                  details stay right here.
+              <div className="flex flex-col gap-4 rounded-sm border border-dashed p-5 sm:flex-row sm:items-center sm:justify-between">
+                <p className="max-w-sm text-sm text-ink-muted">
+                  No account needed. Fill in the form below, or sign in with Google to fill in your name and
+                  email automatically.
                 </p>
-                <Button type="button" variant="outline" size="lg" onClick={signIn} disabled={redirecting}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={signIn}
+                  disabled={redirecting}
+                  className="shrink-0"
+                >
                   {redirecting ? <Loader2 className="animate-spin" /> : <GoogleIcon />}
                   {redirecting ? "Redirecting…" : "Continue with Google"}
                 </Button>
@@ -189,7 +209,7 @@ export function QuotationCheckout() {
             )}
           </Step>
 
-          <Step n={2} title="Where should we send it?">
+          <Step n={2} title="Where should we send the quotation?">
             <div className="grid gap-5 sm:grid-cols-2">
               <Field label="Full name" id="name">
                 <Input id="name" value={form.name} onChange={set("name")} required autoComplete="name" />
@@ -202,7 +222,7 @@ export function QuotationCheckout() {
                   onChange={set("phone")}
                   required
                   autoComplete="tel"
-                  placeholder="+94 77 123 4567"
+                  placeholder="076 123 4567"
                 />
               </Field>
               <Field label="Email" id="email" className="sm:col-span-2">
@@ -239,7 +259,7 @@ export function QuotationCheckout() {
         </div>
 
         <aside className="lg:col-span-5">
-          <div className="bg-card p-6 md:p-8 lg:sticky lg:top-28">
+          <div className="bg-card p-6 md:p-8 lg:sticky lg:top-36">
             <h2 className="font-display text-2xl">
               Your selection <span className="font-sans text-sm text-ink-muted">({totalItems})</span>
             </h2>
@@ -259,7 +279,7 @@ export function QuotationCheckout() {
                     <p className="truncate text-sm font-medium">{item.name}</p>
                     <p className="text-xs tabular-nums text-ink-muted">Qty {item.quantity}</p>
                   </div>
-                  <p className="text-sm tabular-nums">{formatPrice(item.price * item.quantity)}</p>
+                  <p className="text-sm tabular-nums">{formatProductPrice(item.price * item.quantity)}</p>
                 </li>
               ))}
             </ul>
@@ -277,10 +297,8 @@ export function QuotationCheckout() {
                 <>
                   <Loader2 className="animate-spin" /> Sending request…
                 </>
-              ) : signedIn ? (
-                "Send quotation request"
               ) : (
-                "Sign in & send request"
+                "Send quotation request"
               )}
             </Button>
             <p className="mt-4 text-xs leading-relaxed text-ink-muted">

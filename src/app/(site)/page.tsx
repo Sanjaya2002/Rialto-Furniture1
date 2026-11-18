@@ -12,6 +12,8 @@ import { FeaturedProducts } from "@/components/site/home/featured-products";
 import { MadeToMeasure } from "@/components/site/home/made-to-measure";
 import { Spaces } from "@/components/site/home/spaces";
 import { Testimonials } from "@/components/site/home/testimonials";
+import { WhyRialto } from "@/components/site/home/why-rialto";
+import { Projects } from "@/components/site/home/projects";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -35,12 +37,12 @@ export default async function HomePage() {
     url: SITE_CONFIG.url,
     logo: `${SITE_CONFIG.url}/brand/logo.png`,
     description: SITE_CONFIG.description,
-    telephone: SITE_CONFIG.phone,
-    email: SITE_CONFIG.email,
+    telephone: SITE_CONFIG.phones,
+    email: SITE_CONFIG.emails.map((e) => e.address),
     address: {
       "@type": "PostalAddress",
       streetAddress: SITE_CONFIG.address,
-      addressLocality: "Colombo",
+      addressLocality: SITE_CONFIG.locality,
       addressCountry: "LK",
     },
     sameAs: SOCIAL_LINKS.map((s) => s.href),
@@ -62,6 +64,8 @@ export default async function HomePage() {
         }))}
       />
       <FeaturedProducts products={featured.map(toProductSummary)} />
+      <WhyRialto />
+      <Projects />
       <MadeToMeasure />
       <Spaces categorySlugs={categories.map((c) => c.slug)} />
       <Testimonials reviews={reviews.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() }))} />

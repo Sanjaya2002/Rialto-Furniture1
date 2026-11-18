@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidateStorefront } from "@/server/revalidate";
 import { handler, HttpError, parseJson } from "@/server/http";
 import { getAdminUser } from "@/server/auth";
+import { rateLimit } from "@/server/rate-limit";
 import { createReview, listAllReviews, listProductReviews } from "@/server/services/reviews";
 import { reviewInput } from "@/server/validation";
 
@@ -18,6 +19,7 @@ export const GET = handler(async (request) => {
 });
 
 export const POST = handler(async (request) => {
+  rateLimit(request, "review", 5, 60 * 60 * 1000);
   const input = await parseJson(request, reviewInput);
   const review = await createReview(input);
   revalidateStorefront();

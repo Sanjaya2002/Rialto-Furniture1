@@ -1,24 +1,33 @@
 import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
-import { SITE_CONFIG, whatsappLink } from "@/lib/constants";
+import { SITE_CONFIG, SOCIAL_LINKS, mapsHref, telHref, whatsappLink } from "@/lib/constants";
+import { SOCIAL_ICONS } from "@/components/site/icons";
 import { PageHeader } from "@/components/site/page-header";
 import { ContactForm } from "@/components/site/forms/contact-form";
 import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: `Talk to ${SITE_CONFIG.name} — call, WhatsApp, email or visit our Colombo showroom.`,
+  description: `Talk to ${SITE_CONFIG.name} — call, WhatsApp, email or visit our Yakkala showroom.`,
   alternates: { canonical: "/contact" },
 };
 
-const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE_CONFIG.address)}`;
-
 export default function ContactPage() {
   const channels = [
-    { label: "WhatsApp", value: "Chat with our team", href: whatsappLink(), external: true },
-    { label: "Call", value: SITE_CONFIG.phone, href: `tel:${SITE_CONFIG.phone.replace(/\s/g, "")}` },
-    { label: "Email", value: SITE_CONFIG.email, href: `mailto:${SITE_CONFIG.email}` },
-    { label: "Showroom", value: SITE_CONFIG.address, href: mapsUrl, external: true },
+    { label: "WhatsApp", value: SITE_CONFIG.whatsappDisplay, href: whatsappLink(), external: true },
+    ...SITE_CONFIG.phones.map((phone, i) => ({
+      label: i === 0 ? "Call" : "Call (alternate)",
+      value: phone,
+      href: telHref(phone),
+      external: false,
+    })),
+    ...SITE_CONFIG.emails.map((email) => ({
+      label: `Email · ${email.label}`,
+      value: email.address,
+      href: `mailto:${email.address}`,
+      external: false,
+    })),
+    { label: "Showroom", value: SITE_CONFIG.address, href: mapsHref, external: true },
   ];
 
   return (
@@ -48,6 +57,28 @@ export default function ContactPage() {
               </a>
             </RevealItem>
           ))}
+          <RevealItem className="pt-8">
+            <span className="mb-3 block text-[0.7rem] uppercase tracking-[0.2em] text-ink-muted">
+              Follow us
+            </span>
+            <div className="flex flex-wrap gap-3">
+              {SOCIAL_LINKS.map((social) => {
+                const Icon = SOCIAL_ICONS[social.label];
+                return (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="grid h-11 w-11 place-items-center rounded-full border border-ink/20 transition-colors hover:border-ink hover:bg-ink hover:text-paper"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </a>
+                );
+              })}
+            </div>
+          </RevealItem>
         </RevealGroup>
 
         <div className="lg:col-span-6 lg:col-start-7">

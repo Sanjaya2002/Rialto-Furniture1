@@ -1,6 +1,6 @@
 import "server-only";
 import { db } from "../db";
-import { notFound } from "../http";
+import { HttpError, notFound } from "../http";
 import { generateSlug } from "@/lib/utils";
 import type { CategoryInput, CategoryUpdate } from "../validation";
 
@@ -29,7 +29,13 @@ export async function updateCategory(id: string, input: CategoryUpdate) {
 }
 
 export async function deleteCategory(id: string) {
-  const existing = await db.category.findUnique({ where: { id }, select: { id: true } });
+  const existing = await db.category.findUnique({
+    where: { id },
+    select: { id: true, _count: { select: { products: true } } },
+  });
   if (!existing) throw notFound("Category");
+  if (existing._count.products > 0) {
+    throw new HttpError(409, "This category still has products. Move or delete them first.");
+  }
   await db.category.delete({ where: { id } });
 }

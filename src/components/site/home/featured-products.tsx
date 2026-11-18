@@ -15,11 +15,12 @@ export function FeaturedProducts({ products }: { products: ProductSummary[] }) {
     <section className="container py-24 md:py-36">
       <div className="mb-14 grid gap-6 md:mb-20 md:grid-cols-12 md:items-end">
         <div className="md:col-span-8">
-          <p className="eyebrow mb-5">03 — Selected pieces</p>
+          <p className="eyebrow mb-5">03 — Featured picks</p>
           <SplitText text={"Chosen for the\n*long* workday"} className="text-display-lg" />
         </div>
         <p className="max-w-sm text-ink-muted md:col-span-4 md:justify-self-end">
-          A short edit of what our clients reach for most — tested for comfort, built for years of daily use.
+          Not sure where to start? These are the chairs our clients reach for most — tested for comfort, built
+          for years of daily use.
         </p>
       </div>
 
@@ -45,7 +46,7 @@ export function FeaturedProducts({ products }: { products: ProductSummary[] }) {
 
       <div className="mt-16 flex justify-center md:mt-24">
         <Button asChild variant="outline" size="lg">
-          <Link href="/shop">See the full collection</Link>
+          <Link href="/shop">View all products →</Link>
         </Button>
       </div>
     </section>

@@ -87,7 +87,7 @@ export default async function ProductPage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <div className="container pt-24 md:pt-32">
+      <div className="container pt-24 md:pt-32 lg:pt-40">
         <nav aria-label="Breadcrumb" className="mb-6 text-xs text-ink-muted md:mb-10">
           <ol className="flex flex-wrap items-center gap-2">
             <li>
@@ -113,7 +113,7 @@ export default async function ProductPage({ params }: Props) {
             <ProductGallery images={images} name={product.name} />
           </div>
           <div className="md:col-span-5">
-            <div className="md:sticky md:top-28">
+            <div className="md:sticky md:top-28 lg:top-36">
               <ProductPurchase
                 product={{
                   id: product.id,
@@ -151,7 +151,7 @@ export default async function ProductPage({ params }: Props) {
         </section>
       )}
 
-      <section id="reviews" className="container mt-24 scroll-mt-24 md:mt-36">
+      <section id="reviews" className="container mt-24 scroll-mt-24 md:mt-36 lg:scroll-mt-36">
         <div className="grid gap-12 border-t pt-10 lg:grid-cols-12">
           <div className="lg:col-span-4">
             <h2 className="text-display-sm">Reviews</h2>

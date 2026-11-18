@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/providers/cart-provider";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, formatProductPrice, hasPrice } from "@/lib/utils";
 import { IMAGERY } from "@/lib/constants";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -77,11 +77,12 @@ export function CartDrawer() {
                           <p className="line-clamp-2 font-medium leading-snug">{item.name}</p>
                         )}
                         <p className="shrink-0 text-sm tabular-nums">
-                          {formatPrice(item.price * item.quantity)}
+                          {formatProductPrice(item.price * item.quantity)}
                         </p>
                       </div>
                       <p className="mt-1 text-xs tabular-nums text-ink-muted">
-                        {formatPrice(item.price)} each
+                        {formatProductPrice(item.price)}
+                        {hasPrice(item.price) && " each"}
                       </p>
                       <div className="mt-auto flex items-center justify-between pt-3">
                         <QuantityStepper

@@ -40,7 +40,7 @@ export function MadeToMeasure() {
         </div>
 
         <div className="flex flex-col justify-center lg:col-span-5 lg:col-start-8">
-          <p className="eyebrow mb-6 text-paper/50">04 — Made to measure</p>
+          <p className="eyebrow mb-6 text-paper/50">05 — Made to measure</p>
           <SplitText
             text={"When the catalogue\nisn’t *quite* right"}
             className="text-display-md [&_.text-accent-deep]:text-accent"

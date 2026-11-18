@@ -20,6 +20,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatPrice } from "@/lib/utils";
 import { toast } from "sonner";
 import { SmartImage } from "@/components/site/smart-image";
+import { ImageUploader } from "@/components/admin/image-uploader";
+import { apiRequest, errorMessage, jsonBody } from "@/lib/api-client";
 import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 
 interface Category {
@@ -46,7 +48,7 @@ interface ProductForm {
   description: string;
   price: string;
   categoryId: string;
-  images: string;
+  images: string[];
   stock: string;
   featured: boolean;
   specifications: string;
@@ -57,7 +59,7 @@ const emptyForm: ProductForm = {
   description: "",
   price: "",
   categoryId: "",
-  images: "",
+  images: [],
   stock: "0",
   featured: false,
   specifications: "",
@@ -75,9 +77,12 @@ export default function AdminProductsPage() {
   const [form, setForm] = useState<ProductForm>(emptyForm);
 
   const fetchProducts = useCallback(async () => {
-    const res = await fetch("/api/products?limit=100");
-    const data = await res.json();
-    setProducts(data.products ?? []);
+    try {
+      const data = await apiRequest<{ products: Product[] }>("/api/products?limit=100");
+      setProducts(data.products ?? []);
+    } catch (error) {
+      toast.error(errorMessage(error, "Could not load products"));
+    }
   }, []);
 
   useEffect(() => {
@@ -102,7 +107,7 @@ export default function AdminProductsPage() {
       description: product.description,
       price: String(product.price),
       categoryId: product.categoryId,
-      images: product.images.join(", "),
+      images: product.images,
       stock: String(product.stock),
       featured: product.featured,
       specifications: product.specifications ? JSON.stringify(product.specifications, null, 2) : "",
@@ -111,44 +116,54 @@ export default function AdminProductsPage() {
   }
 
   async function handleSave() {
+    if (!form.name.trim() || !form.description.trim()) {
+      toast.error("Name and description are required.");
+      return;
+    }
+    if (!form.categoryId) {
+      toast.error("Choose a category.");
+      return;
+    }
+    const price = form.price.trim() === "" ? 0 : Number(form.price);
+    if (!Number.isFinite(price) || price < 0) {
+      toast.error("Price must be a number (use 0 for “Price on request”).");
+      return;
+    }
+    let specifications: Record<string, unknown> | null = null;
+    if (form.specifications.trim()) {
+      try {
+        specifications = JSON.parse(form.specifications);
+      } catch {
+        toast.error('Specifications must be valid JSON, e.g. {"Material": "Mesh"}');
+        return;
+      }
+    }
+
     setSaving(true);
     try {
       const body = {
-        name: form.name,
-        description: form.description,
-        price: parseFloat(form.price),
+        name: form.name.trim(),
+        description: form.description.trim(),
+        price,
         categoryId: form.categoryId,
-        images: form.images
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean),
+        images: form.images,
         stock: parseInt(form.stock) || 0,
         featured: form.featured,
-        specifications: form.specifications ? JSON.parse(form.specifications) : null,
+        specifications,
       };
 
       if (editingProduct) {
-        const res = await fetch(`/api/products/${editingProduct.slug}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-        if (!res.ok) throw new Error("Failed to update product");
+        await apiRequest(`/api/products/${editingProduct.slug}`, jsonBody(body, "PUT"));
         toast.success("Product updated");
       } else {
-        const res = await fetch("/api/products", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-        if (!res.ok) throw new Error("Failed to create product");
+        await apiRequest("/api/products", jsonBody(body));
         toast.success("Product created");
       }
 
       setDialogOpen(false);
       fetchProducts();
-    } catch {
-      toast.error("Failed to save product");
+    } catch (error) {
+      toast.error(errorMessage(error, "Failed to save product"));
     } finally {
       setSaving(false);
     }
@@ -157,16 +172,13 @@ export default function AdminProductsPage() {
   async function handleDelete() {
     if (!deletingProduct) return;
     try {
-      const res = await fetch(`/api/products/${deletingProduct.slug}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error("Failed to delete product");
+      await apiRequest(`/api/products/${deletingProduct.slug}`, { method: "DELETE" });
       toast.success("Product deleted");
       setDeleteOpen(false);
       setDeletingProduct(null);
       fetchProducts();
-    } catch {
-      toast.error("Failed to delete product");
+    } catch (error) {
+      toast.error(errorMessage(error, "Failed to delete product"));
     }
   }
 
@@ -308,7 +320,7 @@ export default function AdminProductsPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label className="text-ink-soft">Price (LKR)</Label>
+                <Label className="text-ink-soft">Price (LKR, 0 = price on request)</Label>
                 <Input
                   type="number"
                   value={form.price}
@@ -342,13 +354,8 @@ export default function AdminProductsPage() {
               </Select>
             </div>
             <div className="grid gap-2">
-              <Label className="text-ink-soft">Images (comma-separated URLs)</Label>
-              <Input
-                value={form.images}
-                onChange={(e) => setForm({ ...form, images: e.target.value })}
-                placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-                className="border-border bg-card text-ink placeholder:text-ink-muted/60"
-              />
+              <Label className="text-ink-soft">Images</Label>
+              <ImageUploader value={form.images} onChange={(images) => setForm((f) => ({ ...f, images }))} />
             </div>
             <div className="flex items-center gap-2">
               <input
@@ -369,7 +376,7 @@ export default function AdminProductsPage() {
                 onChange={(e) => setForm({ ...form, specifications: e.target.value })}
                 className="border-border bg-card font-mono text-xs text-ink"
                 rows={5}
-                placeholder='{"material": "Wood", "weight": "10kg"}'
+                placeholder='{"Material": "Mesh back", "Warranty": "1 year"}'
               />
             </div>
           </div>
@@ -406,7 +413,7 @@ export default function AdminProductsPage() {
             <Button
               variant="destructive"
               onClick={handleDelete}
-              className="bg-red-600 text-ink hover:bg-red-700"
+              className="bg-red-600 text-white hover:bg-red-700"
             >
               Delete
             </Button>

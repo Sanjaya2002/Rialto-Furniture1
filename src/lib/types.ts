@@ -8,6 +8,8 @@ export interface ProductSummary {
   images: string[];
   stock: number;
   category: { name: string; slug: string } | null;
+  /** One-line selling point (first sentence of the description). */
+  summary: string | null;
 }
 
 export interface CategorySummary {
@@ -34,6 +36,7 @@ export function toProductSummary(p: {
   price: number;
   images: string[];
   stock: number;
+  description?: string | null;
   category?: { name: string; slug: string } | null;
 }): ProductSummary {
   return {
@@ -44,5 +47,13 @@ export function toProductSummary(p: {
     images: p.images,
     stock: p.stock,
     category: p.category ? { name: p.category.name, slug: p.category.slug } : null,
+    summary: firstSentence(p.description),
   };
+}
+
+function firstSentence(text?: string | null, max = 90): string | null {
+  if (!text) return null;
+  const sentence = text.trim().split(/(?<=[.!?])\s/)[0] ?? "";
+  if (!sentence) return null;
+  return sentence.length > max ? `${sentence.slice(0, max - 1).trimEnd()}…` : sentence;
 }

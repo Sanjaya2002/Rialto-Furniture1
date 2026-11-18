@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import type { CategorySummary } from "@/lib/types";
-import { IMAGERY } from "@/lib/constants";
+import { CATEGORY_TAGLINES, IMAGERY } from "@/lib/constants";
 import { pad } from "@/lib/utils";
 import { SmartImage } from "@/components/site/smart-image";
 import { SplitText } from "@/components/motion/split-text";
@@ -38,8 +38,8 @@ export function CategoryRail({ categories }: { categories: CategorySummary[] }) 
   const header = (
     <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <div>
-        <p className="eyebrow mb-5">02 — Ranges</p>
-        <SplitText text={"Shop by *space*"} className="text-display-lg" />
+        <p className="eyebrow mb-5">02 — Shop by category</p>
+        <SplitText text={"Find the right furniture\nfor your *space*"} className="text-display-lg" />
       </div>
       <Link href="/shop" className="link-underline self-start text-sm md:self-auto">
         View all furniture
@@ -70,9 +70,14 @@ export function CategoryRail({ categories }: { categories: CategorySummary[] }) 
       </div>
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 md:p-7">
         <div>
-          <h3 className="font-display text-[clamp(1.8rem,2.6vw,2.6rem)] leading-none">{category.name}</h3>
+          <h3 className="font-display text-[clamp(1.8rem,2.6vw,2.6rem)] font-semibold leading-none">
+            {category.name}
+          </h3>
+          {CATEGORY_TAGLINES[category.slug] && (
+            <p className="mt-3 text-base font-medium text-paper">{CATEGORY_TAGLINES[category.slug]}</p>
+          )}
           {category.description && (
-            <p className="mt-3 line-clamp-2 max-w-sm text-sm text-paper/70">{category.description}</p>
+            <p className="mt-2 line-clamp-2 max-w-sm text-sm text-paper/70">{category.description}</p>
           )}
         </div>
         <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-paper/40 transition-colors duration-500 group-hover:border-accent group-hover:bg-accent group-hover:text-ink">
@@ -129,7 +134,7 @@ export function CategoryRail({ categories }: { categories: CategorySummary[] }) 
         </div>
       </div>
       <span id="ranges" className="sr-only">
-        Shop by space
+        Shop by category
       </span>
     </section>
   );

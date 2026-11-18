@@ -5,7 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDownRight } from "lucide-react";
-import { IMAGERY } from "@/lib/constants";
+import { IMAGERY, whatsappLink } from "@/lib/constants";
+import { WhatsAppIcon } from "@/components/site/icons";
 import { Button } from "@/components/ui/button";
 import { SplitText } from "@/components/motion/split-text";
 import { EASE_IN_OUT, EASE_OUT } from "@/components/motion/easing";
@@ -59,20 +60,25 @@ export function Hero() {
           as="h1"
           immediate
           delay={0.55}
-          text={"Furniture for\nthe way you *work.*"}
+          text={"Where comfort\nmeets *style.*"}
           className="max-w-[14ch] text-display-xl [&_.text-accent-deep]:text-accent"
         />
 
         <div className="mt-10 grid gap-8 border-t border-paper/20 pt-6 md:mt-14 md:grid-cols-12 md:items-end">
-          <motion.p
-            className="max-w-md text-[0.95rem] leading-relaxed text-paper/75 md:col-span-5"
+          <motion.div
+            className="max-w-md md:col-span-5"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.3, duration: 1, ease: EASE_OUT }}
           >
-            Ergonomic seating and considered pieces for offices, receptions and lecture halls — supplied,
-            delivered and set up across the island.
-          </motion.p>
+            <p className="font-display text-[clamp(1.15rem,1.8vw,1.5rem)] font-semibold leading-snug text-paper">
+              Premium furniture for modern workplaces.
+            </p>
+            <p className="mt-3 text-[0.95rem] leading-relaxed text-paper/75">
+              Ergonomic office, executive, reception and lecture chairs — supplied, delivered and set up
+              across the island.
+            </p>
+          </motion.div>
 
           <motion.div
             className="flex flex-wrap gap-3 md:col-span-7 md:justify-end"
@@ -83,14 +89,22 @@ export function Hero() {
             <Button asChild variant="light" size="lg">
               <Link href="/shop">Explore the collection</Link>
             </Button>
-            <Button asChild variant="outline-light" size="lg">
-              <Link href="/custom-order">Commission a piece</Link>
+            <Button asChild variant="outline-light" size="lg" className="[&_svg]:size-5">
+              <a
+                href={whatsappLink(
+                  "Hi Rialto Furniture, I saw your website and would like to know more about your chairs.",
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <WhatsAppIcon className="text-[#25D366]" /> Inquire on WhatsApp
+              </a>
             </Button>
           </motion.div>
         </div>
 
         <motion.div
-          className="absolute right-5 top-32 hidden items-center gap-3 text-[0.7rem] uppercase tracking-[0.2em] text-paper/60 lg:right-10 xl:flex"
+          className="absolute right-5 top-40 hidden items-center gap-3 text-[0.7rem] uppercase tracking-[0.2em] text-paper/60 lg:right-10 xl:flex"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 1 }}

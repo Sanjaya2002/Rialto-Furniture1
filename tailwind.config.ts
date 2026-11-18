@@ -39,14 +39,14 @@ const config: Config = {
         success: "#2F6B4F",
       },
       fontFamily: {
-        display: ["var(--font-display)", "Georgia", "serif"],
+        display: ["var(--font-display)", "var(--font-sans)", "system-ui", "sans-serif"],
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
       fontSize: {
-        "display-xl": ["clamp(3.25rem, 9vw, 9.5rem)", { lineHeight: "0.92", letterSpacing: "-0.035em" }],
-        "display-lg": ["clamp(2.6rem, 6.2vw, 6.25rem)", { lineHeight: "0.96", letterSpacing: "-0.03em" }],
-        "display-md": ["clamp(2.1rem, 4.2vw, 4rem)", { lineHeight: "1.02", letterSpacing: "-0.025em" }],
-        "display-sm": ["clamp(1.6rem, 2.6vw, 2.4rem)", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
+        "display-xl": ["clamp(3rem, 8vw, 8.25rem)", { lineHeight: "0.98", letterSpacing: "-0.04em" }],
+        "display-lg": ["clamp(2.4rem, 5.4vw, 5.25rem)", { lineHeight: "1.02", letterSpacing: "-0.035em" }],
+        "display-md": ["clamp(2rem, 3.8vw, 3.5rem)", { lineHeight: "1.06", letterSpacing: "-0.03em" }],
+        "display-sm": ["clamp(1.5rem, 2.4vw, 2.2rem)", { lineHeight: "1.15", letterSpacing: "-0.02em" }],
       },
       borderRadius: {
         lg: "6px",

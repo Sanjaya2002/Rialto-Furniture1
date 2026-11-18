@@ -21,7 +21,6 @@
 
   body {
     @apply bg-paper font-sans text-ink antialiased;
-    font-feature-settings: "ss01", "cv11";
   }
 
   * {
@@ -39,8 +38,7 @@
   h1,
   h2,
   h3 {
-    @apply font-display font-normal;
-    font-optical-sizing: auto;
+    @apply font-display font-bold;
     text-wrap: balance;
   }
 

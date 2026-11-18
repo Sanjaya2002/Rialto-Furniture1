@@ -1,6 +1,6 @@
 import "server-only";
 import { z } from "zod";
-import { CUSTOM_ORDER_STATUSES, ORDER_STATUSES, QUOTATION_STATUSES } from "@/lib/constants";
+import { CONTACT_STATUSES, CUSTOM_ORDER_STATUSES, ORDER_STATUSES, QUOTATION_STATUSES } from "@/lib/constants";
 
 const requiredText = (label: string, max = 200) =>
   z
@@ -43,7 +43,7 @@ export const categoryInput = z.object({
   name: requiredText("Name", 100),
   slug: optionalText(120),
   description: optionalText(1000),
-  image: z.string().trim().url("Image must be a valid URL.").optional(),
+  image: z.string().trim().url("Image must be a valid URL.").nullable().optional(),
 });
 export const categoryUpdate = categoryInput.partial();
 export type CategoryInput = z.infer<typeof categoryInput>;
@@ -107,6 +107,7 @@ export type QuotationInput = z.infer<typeof quotationInput>;
 export const orderStatusInput = z.object({ status: z.enum(ORDER_STATUSES) });
 export const quotationStatusInput = z.object({ status: z.enum(QUOTATION_STATUSES) });
 export const customOrderStatusInput = z.object({ status: z.enum(CUSTOM_ORDER_STATUSES) });
+export const contactStatusInput = z.object({ status: z.enum(CONTACT_STATUSES) });
 
 /* ---------- Auth ---------- */
 

@@ -16,6 +16,14 @@ export function formatPrice(price: number): string {
   return priceFormatter.format(price);
 }
 
+/** Products saved without a price (0) are quoted individually. */
+export const hasPrice = (price: number) => price > 0;
+
+/** Unit price for storefront display: "LKR 13,599" or "Price on request". */
+export function formatProductPrice(price: number): string {
+  return hasPrice(price) ? formatPrice(price) : "Price on request";
+}
+
 const dateFormatter = new Intl.DateTimeFormat("en-GB", { year: "numeric", month: "short", day: "numeric" });
 
 export function formatDate(date: Date | string): string {

@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Plus } from "lucide-react";
-import { cn, formatPrice } from "@/lib/utils";
-import { IMAGERY } from "@/lib/constants";
+import { ArrowRight, Plus } from "lucide-react";
+import { cn, formatProductPrice } from "@/lib/utils";
+import { IMAGERY, productEnquiryLink } from "@/lib/constants";
 import type { ProductSummary } from "@/lib/types";
 import { useCart } from "@/providers/cart-provider";
 import { SmartImage } from "@/components/site/smart-image";
+import { WhatsAppIcon } from "@/components/site/icons";
 
 interface ProductCardProps {
   product: ProductSummary;
@@ -39,7 +40,7 @@ export function ProductCard({
     });
 
   return (
-    <article className="group relative flex flex-col">
+    <article className="group relative flex h-full flex-col">
       <div
         className={cn(
           "relative overflow-hidden bg-bone",
@@ -85,23 +86,50 @@ export function ProductCard({
         </button>
       </div>
 
-      <div className="mt-3 flex flex-col gap-1 sm:mt-4 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-        <div className="min-w-0">
-          {product.category && (
-            <p className="mb-1 text-[0.68rem] uppercase tracking-[0.18em] text-ink-muted">
-              {product.category.name}
-            </p>
-          )}
-          <h3 className="font-sans text-[0.95rem] font-medium leading-snug md:text-base">
-            <Link
-              href={href}
-              className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500 ease-out-expo group-hover:bg-[length:100%_1px]"
-            >
-              {product.name}
-            </Link>
-          </h3>
+      <div className="mt-4 flex flex-1 flex-col">
+        {product.category && (
+          <p className="mb-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-accent-deep">
+            {product.category.name}
+          </p>
+        )}
+        <h3 className="font-display text-[1.02rem] font-semibold leading-snug md:text-[1.15rem]">
+          <Link
+            href={href}
+            className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500 ease-out-expo group-hover:bg-[length:100%_1px]"
+          >
+            {product.name}
+          </Link>
+        </h3>
+        {product.summary && (
+          <p className="mt-1.5 line-clamp-2 text-[0.85rem] leading-relaxed text-ink-muted">
+            {product.summary}
+          </p>
+        )}
+        <p className="mt-3 font-display text-[1.05rem] font-bold tabular-nums text-ink md:text-lg">
+          {formatProductPrice(product.price)}
+        </p>
+
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t pt-3 text-[0.8rem] font-medium">
+          <Link
+            href={href}
+            className="group/link inline-flex items-center gap-1.5 text-ink hover:text-accent-deep"
+          >
+            View details
+            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/link:translate-x-0.5" />
+          </Link>
+          <a
+            href={productEnquiryLink(product.name, product.slug)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-[#128C4B] hover:text-[#0b6b38]"
+            aria-label={`Inquire about ${product.name} on WhatsApp`}
+          >
+            <WhatsAppIcon className="h-4 w-4" />
+            <span>
+              <span className="hidden sm:inline">Inquire on </span>WhatsApp
+            </span>
+          </a>
         </div>
-        <p className="shrink-0 text-[0.9rem] tabular-nums text-ink-soft">{formatPrice(product.price)}</p>
       </div>
     </article>
   );

@@ -131,7 +131,8 @@ model VerificationToken {
 model QuotationRequest {
   id             String                 @id @default(cuid())
   reference      String                 @unique
-  userId         String
+  /// Null for guest requests (no sign-in).
+  userId         String?
   status         String                 @default("Pending")
   notes          String?
   customerName   String
@@ -141,7 +142,7 @@ model QuotationRequest {
   idempotencyKey String                 @unique
   createdAt      DateTime               @default(now())
   updatedAt      DateTime               @updatedAt
-  user           User                   @relation(fields: [userId], references: [id])
+  user           User?                  @relation(fields: [userId], references: [id])
   items          QuotationRequestItem[]
 }
 
@@ -154,4 +155,15 @@ model QuotationRequestItem {
   priceSnapshot       Float
   product             Product          @relation(fields: [productId], references: [id])
   quotationRequest    QuotationRequest @relation(fields: [quotationRequestId], references: [id], onDelete: Cascade)
+}
+
+/// Messages sent from the website contact form.
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  status    String   @default("New")
+  createdAt DateTime @default(now())
 }
