@@ -1,48 +1,49 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/api-auth";
+import { NextResponse } from "next/server";
+import { handler, HttpError, parseJson, validate } from "@/server/http";
+import { requireAdmin } from "@/server/auth";
+import { createCustomOrder, listCustomOrders, validateAttachment } from "@/server/services/custom-orders";
+import { customOrderInput } from "@/server/validation";
 
-export async function GET(request: NextRequest) {
-  try {
-    const auth = await requireAdmin(request);
-    if (auth) return auth;
+export const GET = handler(async () => {
+  await requireAdmin();
+  return NextResponse.json(await listCustomOrders());
+});
 
-    const requests = await prisma.customOrderRequest.findMany({
-      orderBy: { createdAt: "desc" },
-    });
+/** Accepts multipart/form-data (with optional "file") or JSON. */
+export const POST = handler(async (request) => {
+  const contentType = request.headers.get("content-type") ?? "";
 
-    return NextResponse.json(requests);
-  } catch (error) {
-    console.error("Failed to fetch custom orders:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch custom orders" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-
-    const customOrder = await prisma.customOrderRequest.create({
-      data: {
-        customerName: body.customerName,
-        email: body.email,
-        phone: body.phone,
-        furnitureType: body.furnitureType,
-        description: body.description,
-        dimensions: body.dimensions,
-        attachment: body.attachment,
+  if (contentType.includes("multipart/form-data")) {
+    let form: FormData;
+    try {
+      form = await request.formData();
+    } catch {
+      throw new HttpError(400, "Invalid form submission.");
+    }
+    const field = (key: string) => {
+      const value = form.get(key);
+      return typeof value === "string" ? value : undefined;
+    };
+    const input = validate(
+      {
+        customerName: field("customerName"),
+        email: field("email"),
+        phone: field("phone"),
+        furnitureType: field("furnitureType"),
+        description: field("description"),
+        dimensions: field("dimensions"),
       },
-    });
-
-    return NextResponse.json(customOrder, { status: 201 });
-  } catch (error) {
-    console.error("Failed to create custom order:", error);
-    return NextResponse.json(
-      { error: "Failed to create custom order" },
-      { status: 500 }
+      customOrderInput,
     );
+    const file = form.get("file");
+    const attachment = file instanceof File && file.size > 0 ? file : null;
+    if (attachment) validateAttachment(attachment);
+
+    const created = await createCustomOrder(input, attachment);
+    return NextResponse.json({ id: created.id }, { status: 201 });
   }
-}
+
+  const input = await parseJson(request, customOrderInput);
+  const created = await createCustomOrder(input);
+  return NextResponse.json({ id: created.id }, { status: 201 });
+});

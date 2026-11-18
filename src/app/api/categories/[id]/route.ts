@@ -1,65 +1,23 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/api-auth";
+import { NextResponse } from "next/server";
+import { revalidateStorefront } from "@/server/revalidate";
+import { handler, parseJson } from "@/server/http";
+import { requireAdmin } from "@/server/auth";
+import { deleteCategory, updateCategory } from "@/server/services/categories";
+import { categoryUpdate } from "@/server/validation";
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const auth = await requireAdmin(request);
-    if (auth) return auth;
+type Params = { id: string };
 
-    const { id } = await params;
-    const existing = await prisma.category.findUnique({
-      where: { id },
-    });
+export const PUT = handler<Params>(async (request, { params }) => {
+  await requireAdmin();
+  const input = await parseJson(request, categoryUpdate);
+  const category = await updateCategory((await params).id, input);
+  revalidateStorefront();
+  return NextResponse.json(category);
+});
 
-    if (!existing) {
-      return NextResponse.json({ error: "Category not found" }, { status: 404 });
-    }
-
-    const body = await request.json();
-    const category = await prisma.category.update({
-      where: { id },
-      data: body,
-    });
-
-    return NextResponse.json(category);
-  } catch (error) {
-    console.error("Failed to update category:", error);
-    return NextResponse.json(
-      { error: "Failed to update category" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const auth = await requireAdmin(request);
-    if (auth) return auth;
-
-    const { id } = await params;
-    const existing = await prisma.category.findUnique({
-      where: { id },
-    });
-
-    if (!existing) {
-      return NextResponse.json({ error: "Category not found" }, { status: 404 });
-    }
-
-    await prisma.category.delete({ where: { id } });
-
-    return NextResponse.json({ message: "Category deleted successfully" });
-  } catch (error) {
-    console.error("Failed to delete category:", error);
-    return NextResponse.json(
-      { error: "Failed to delete category" },
-      { status: 500 }
-    );
-  }
-}
+export const DELETE = handler<Params>(async (_request, { params }) => {
+  await requireAdmin();
+  await deleteCategory((await params).id);
+  revalidateStorefront();
+  return NextResponse.json({ message: "Category deleted" });
+});

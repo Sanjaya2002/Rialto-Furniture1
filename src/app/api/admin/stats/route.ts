@@ -1,49 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/api-auth";
+import { NextResponse } from "next/server";
+import { handler } from "@/server/http";
+import { requireAdmin } from "@/server/auth";
+import { getDashboardStats } from "@/server/services/stats";
 
-export async function GET(request: NextRequest) {
-  try {
-    const auth = await requireAdmin(request);
-    if (auth) return auth;
-    const [totalOrders, totalProducts, totalCategories, totalQuotations, orders, recentOrders] =
-      await Promise.all([
-        prisma.order.count(),
-        prisma.product.count(),
-        prisma.category.count(),
-        prisma.quotationRequest.count(),
-        prisma.order.findMany({
-          where: { status: "Completed" },
-          select: { totalAmount: true },
-        }),
-        prisma.order.findMany({
-          take: 5,
-          orderBy: { createdAt: "desc" },
-          select: {
-            id: true,
-            customerName: true,
-            totalAmount: true,
-            status: true,
-            createdAt: true,
-          },
-        }),
-      ]);
-
-    const totalRevenue = orders.reduce((sum: number, o: { totalAmount: number }) => sum + o.totalAmount, 0);
-
-    return NextResponse.json({
-      totalOrders,
-      totalProducts,
-      totalCategories,
-      totalQuotations,
-      totalRevenue,
-      recentOrders,
-    });
-  } catch (error) {
-    console.error("Failed to fetch admin stats:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch admin stats" },
-      { status: 500 }
-    );
-  }
-}
+export const GET = handler(async () => {
+  await requireAdmin();
+  return NextResponse.json(await getDashboardStats());
+});

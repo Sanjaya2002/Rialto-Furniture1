@@ -1,23 +1,21 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createHash, timingSafeEqual } from "node:crypto";
-import { getSupabaseAdminClient } from "@/lib/supabase";
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { handler, HttpError, parseJson } from "@/server/http";
+import { createAdminSupabaseClient, createServerSupabaseClient } from "@/server/supabase";
+import { signupInput } from "@/server/validation";
 
 const RATE_LIMIT_MAX = 3;
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+const rateBuckets = new Map<string, { count: number; resetAt: number }>();
 
-type RateBucket = { count: number; resetAt: number };
-const rateBuckets = new Map<string, RateBucket>();
-
-function checkRateLimit(key: string): boolean {
+/** Best-effort per-instance limiter; the secret key is the real gate. */
+function withinRateLimit(key: string): boolean {
   const now = Date.now();
   const bucket = rateBuckets.get(key);
-
   if (!bucket || bucket.resetAt <= now) {
     rateBuckets.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
     return true;
   }
-
   bucket.count += 1;
   return bucket.count <= RATE_LIMIT_MAX;
 }
@@ -28,79 +26,36 @@ function safeEqual(a: string, b: string): boolean {
   return timingSafeEqual(aHash, bHash);
 }
 
-export async function POST(request: NextRequest) {
-  let body: { email?: string; password?: string; adminSecretKey?: string };
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
-  }
-
-  const email = body.email?.toString().trim() ?? "";
-  const password = body.password ?? "";
-  const adminSecretKey = body.adminSecretKey ?? "";
-
-  if (!email || !password || !adminSecretKey) {
-    return NextResponse.json(
-      { error: "Email, password, and admin secret key are required" },
-      { status: 400 }
-    );
-  }
-
-  const expectedKey = process.env.ADMIN_SECRET_KEY;
-  if (!expectedKey || !safeEqual(adminSecretKey, expectedKey)) {
-    return NextResponse.json(
-      { error: "Invalid admin secret key" },
-      { status: 403 }
-    );
-  }
+/** Creates an admin account. Requires ADMIN_SECRET_KEY. */
+export const POST = handler(async (request) => {
+  const { email, password, adminSecretKey } = await parseJson(request, signupInput);
 
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     request.headers.get("x-real-ip") ||
     "unknown";
-
-  if (!checkRateLimit(`ip:${ip}`) || !checkRateLimit(`email:${email}`)) {
-    return NextResponse.json(
-      { error: "Too many signup attempts. Try again later." },
-      { status: 429 }
-    );
+  if (!withinRateLimit(`ip:${ip}`) || !withinRateLimit(`email:${email}`)) {
+    throw new HttpError(429, "Too many signup attempts. Try again later.");
   }
 
-  const adminClient = getSupabaseAdminClient();
-  const { data: created, error: createError } =
-    await adminClient.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-    });
-
-  if (createError) {
-    const status = createError.message.toLowerCase().includes("already")
-      ? 409
-      : 400;
-    return NextResponse.json({ error: createError.message }, { status });
+  const expectedKey = process.env.ADMIN_SECRET_KEY;
+  if (!expectedKey || !safeEqual(adminSecretKey, expectedKey)) {
+    throw new HttpError(403, "Invalid admin secret key.");
   }
 
-  if (!created.user) {
-    return NextResponse.json(
-      { error: "Something went wrong while creating the account." },
-      { status: 500 }
-    );
-  }
-
-  const supabase = await createServerSupabaseClient();
-  const { error: signInError } = await supabase.auth.signInWithPassword({
+  const { data, error } = await createAdminSupabaseClient().auth.admin.createUser({
     email,
     password,
+    email_confirm: true,
+    app_metadata: { role: "admin" },
   });
-
-  if (signInError) {
-    return NextResponse.json(
-      { error: "Account created, but automatic sign-in failed. Please log in." },
-      { status: 200 }
-    );
+  if (error) {
+    throw new HttpError(error.message.toLowerCase().includes("already") ? 409 : 400, error.message);
   }
+  if (!data.user) throw new HttpError(500, "Something went wrong while creating the account.");
 
-  return NextResponse.json({ success: true, user: created.user });
-}
+  const supabase = await createServerSupabaseClient();
+  const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+
+  return NextResponse.json({ success: true, signedIn: !signInError });
+});

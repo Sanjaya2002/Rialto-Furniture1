@@ -13,3 +13,6 @@ next-env.d.ts
 .DS_Store
 coverage/
 .turbo/
+.env*.local
+.vercel
+tsconfig.tsbuildinfo

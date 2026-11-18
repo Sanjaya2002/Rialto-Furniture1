@@ -1,32 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/api-auth";
+import { NextResponse } from "next/server";
+import { revalidateStorefront } from "@/server/revalidate";
+import { handler } from "@/server/http";
+import { requireAdmin } from "@/server/auth";
+import { deleteReview } from "@/server/services/reviews";
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const auth = await requireAdmin(request);
-    if (auth) return auth;
-
-    const { id } = await params;
-    const existing = await prisma.review.findUnique({
-      where: { id },
-    });
-
-    if (!existing) {
-      return NextResponse.json({ error: "Review not found" }, { status: 404 });
-    }
-
-    await prisma.review.delete({ where: { id } });
-
-    return NextResponse.json({ message: "Review deleted successfully" });
-  } catch (error) {
-    console.error("Failed to delete review:", error);
-    return NextResponse.json(
-      { error: "Failed to delete review" },
-      { status: 500 }
-    );
-  }
-}
+export const DELETE = handler<{ id: string }>(async (_request, { params }) => {
+  await requireAdmin();
+  await deleteReview((await params).id);
+  revalidateStorefront();
+  return NextResponse.json({ message: "Review deleted" });
+});

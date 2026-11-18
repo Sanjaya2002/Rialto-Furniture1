@@ -1,51 +1,60 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Fraunces, Geist } from "next/font/google";
+import { Toaster } from "sonner";
 import { SITE_CONFIG } from "@/lib/constants";
-import { SiteShell } from "@/components/layout/site-shell";
 import "./globals.css";
 
+const display = Fraunces({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  axes: ["opsz", "SOFT"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const sans = Geist({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_CONFIG.url),
   title: {
-    default: `${SITE_CONFIG.name} — ${SITE_CONFIG.tagline}`,
-    template: `%s | ${SITE_CONFIG.name}`,
+    default: `${SITE_CONFIG.name} — Office & commercial furniture, Sri Lanka`,
+    template: `%s — ${SITE_CONFIG.name}`,
   },
   description: SITE_CONFIG.description,
-  metadataBase: new URL(SITE_CONFIG.url),
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: "en_LK",
     siteName: SITE_CONFIG.name,
-    title: `${SITE_CONFIG.name} — ${SITE_CONFIG.tagline}`,
-    description: SITE_CONFIG.description,
     url: SITE_CONFIG.url,
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: SITE_CONFIG.name,
-      },
-    ],
   },
-  twitter: {
-    card: "summary_large_image",
-    title: `${SITE_CONFIG.name} — ${SITE_CONFIG.tagline}`,
-    description: SITE_CONFIG.description,
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  twitter: { card: "summary_large_image" },
+  robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const viewport: Viewport = {
+  themeColor: "#F4F1EB",
+  width: "device-width",
+  initialScale: 1,
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className="antialiased min-h-screen flex flex-col">
-        <SiteShell>{children}</SiteShell>
+    <html lang="en" className={`${display.variable} ${sans.variable}`}>
+      <body>
+        {children}
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            classNames: {
+              toast: "!rounded-sm !border-line !bg-ink !text-paper !font-sans !shadow-xl",
+              description: "!text-paper/70",
+            },
+          }}
+        />
       </body>
     </html>
   );

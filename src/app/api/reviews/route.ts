@@ -1,59 +1,25 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/api-auth";
+import { NextResponse } from "next/server";
+import { revalidateStorefront } from "@/server/revalidate";
+import { handler, HttpError, parseJson } from "@/server/http";
+import { getAdminUser } from "@/server/auth";
+import { createReview, listAllReviews, listProductReviews } from "@/server/services/reviews";
+import { reviewInput } from "@/server/validation";
 
-export async function GET(request: NextRequest) {
-  try {
-    const auth = await requireAdmin(request);
-    if (auth) return auth;
+/**
+ * Public: ?productId=… returns that product's reviews.
+ * Admin: full moderation list (optionally filtered by productId).
+ */
+export const GET = handler(async (request) => {
+  const productId = request.nextUrl.searchParams.get("productId") || undefined;
 
-    const { searchParams } = new URL(request.url);
-    const productId = searchParams.get("productId");
+  if (await getAdminUser()) return NextResponse.json(await listAllReviews(productId));
+  if (!productId) throw new HttpError(401, "Unauthorized");
+  return NextResponse.json(await listProductReviews(productId));
+});
 
-    const where = productId ? { productId } : {};
-
-    const reviews = await prisma.review.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      include: { product: { select: { name: true } } },
-    });
-
-    return NextResponse.json(reviews);
-  } catch (error) {
-    console.error("Failed to fetch reviews:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch reviews" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-
-    if (body.rating < 1 || body.rating > 5) {
-      return NextResponse.json(
-        { error: "Rating must be between 1 and 5" },
-        { status: 400 }
-      );
-    }
-
-    const review = await prisma.review.create({
-      data: {
-        productId: body.productId,
-        name: body.name,
-        rating: body.rating,
-        comment: body.comment,
-      },
-    });
-
-    return NextResponse.json(review, { status: 201 });
-  } catch (error) {
-    console.error("Failed to create review:", error);
-    return NextResponse.json(
-      { error: "Failed to create review" },
-      { status: 500 }
-    );
-  }
-}
+export const POST = handler(async (request) => {
+  const input = await parseJson(request, reviewInput);
+  const review = await createReview(input);
+  revalidateStorefront();
+  return NextResponse.json(review, { status: 201 });
+});

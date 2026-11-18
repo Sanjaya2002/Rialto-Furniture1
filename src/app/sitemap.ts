@@ -1,41 +1,42 @@
 import type { MetadataRoute } from "next";
-import { prisma } from "@/lib/prisma";
+import { SITE_CONFIG } from "@/lib/constants";
+import { listCategories } from "@/server/services/categories";
+import { listProductSitemapEntries } from "@/server/services/products";
+import { safely } from "@/server/safely";
+
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.rialtofurniture.com";
+  const base = SITE_CONFIG.url;
+  const now = new Date();
 
-  const staticPages = [
-    { url: baseUrl, lastModified: new Date(), changeFrequency: "daily" as const, priority: 1 },
-    { url: `${baseUrl}/shop`, lastModified: new Date(), changeFrequency: "daily" as const, priority: 0.9 },
-    { url: `${baseUrl}/about`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7 },
-    { url: `${baseUrl}/contact`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${baseUrl}/custom-order`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7 },
-    { url: `${baseUrl}/privacy-policy`, lastModified: new Date(), changeFrequency: "yearly" as const, priority: 0.3 },
-    { url: `${baseUrl}/terms`, lastModified: new Date(), changeFrequency: "yearly" as const, priority: 0.3 },
+  const pages: MetadataRoute.Sitemap = [
+    { url: base, lastModified: now, changeFrequency: "daily", priority: 1 },
+    { url: `${base}/shop`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
+    { url: `${base}/custom-order`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/about`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/contact`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/privacy-policy`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${base}/terms`, changeFrequency: "yearly", priority: 0.2 },
   ];
 
-  try {
-    const [products, categories] = await Promise.all([
-      prisma.product.findMany({ select: { slug: true, updatedAt: true } }),
-      prisma.category.findMany({ select: { slug: true } }),
-    ]);
+  const [products, categories] = await Promise.all([
+    safely(listProductSitemapEntries, [], "sitemap products"),
+    safely(listCategories, [], "sitemap categories"),
+  ]);
 
-    const productPages = products.map((product) => ({
-      url: `${baseUrl}/product/${product.slug}`,
-      lastModified: product.updatedAt,
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    }));
-
-    const categoryPages = categories.map((category) => ({
-      url: `${baseUrl}/shop?category=${category.slug}`,
-      lastModified: new Date(),
+  return [
+    ...pages,
+    ...categories.map((c) => ({
+      url: `${base}/shop?category=${c.slug}`,
       changeFrequency: "weekly" as const,
       priority: 0.7,
-    }));
-
-    return [...staticPages, ...productPages, ...categoryPages];
-  } catch {
-    return staticPages;
-  }
+    })),
+    ...products.map((p) => ({
+      url: `${base}/product/${p.slug}`,
+      lastModified: p.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
+  ];
 }

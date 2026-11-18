@@ -96,7 +96,7 @@ async function main() {
       categoryId: executiveChairs.id,
       images: [
         "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&q=80",
-        "https://images.unsplash.com/photo-1567538096630-e0bc55bd6374c?w=800&q=80",
+        "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=800&q=80",
       ],
       stock: 10,
       featured: true,
@@ -204,7 +204,7 @@ async function main() {
       price: 45000,
       categoryId: officeChairs.id,
       images: [
-        "https://images.unsplash.com/photo-1567538096630-e0bc55bd6374c?w=800&q=80",
+        "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=800&q=80",
         "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800&q=80",
       ],
       stock: 40,
@@ -233,7 +233,7 @@ async function main() {
       categoryId: receptionChairs.id,
       images: [
         "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800&q=80",
-        "https://images.unsplash.com/photo-1567538096630-e0bc55bd6374c?w=800&q=80",
+        "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=800&q=80",
       ],
       stock: 25,
       featured: true,
@@ -313,7 +313,7 @@ async function main() {
       categoryId: lectureChairs.id,
       images: [
         "https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=800&q=80",
-        "https://images.unsplash.com/photo-1567538096630-e0bc55bd6374c?w=800&q=80",
+        "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=800&q=80",
       ],
       stock: 200,
       featured: true,
